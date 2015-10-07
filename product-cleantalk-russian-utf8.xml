@@ -167,6 +167,17 @@ if(class_exists('CleantalkAPI')){
     }
 }]]></phpcode>
 		</plugin>
+		<plugin active="1" executionorder="5">
+			<title>Cleantalk: forumdisplay_complete</title>
+			<hookname>forumdisplay_complete</hookname>
+			<phpcode><![CDATA[
+				if($vbulletin->options['cleantalk_link_onoff'])
+				{
+				    $code = "<div id='cleantalk_footer_link' style='width:100%;text-align:center;'><a href='https://cleantalk.org/vbulletin-anti-spam-hack'>vBulletin spam</a> blocked by CleanTalk.</div>";
+				    $footer.= $code;
+				}
+			]]></phpcode>
+		</plugin>
 	</plugins>
 	<phrases>
 		<phrasetype name="Error Messages" fieldname="error">
@@ -185,6 +196,9 @@ if(class_exists('CleantalkAPI')){
 			<phrase name="setting_cleantalk_register_onoff_title" date="1156440504" username="admin" version="1.2"><![CDATA[Включить проверку регистраций?]]></phrase>
 			<phrase name="setting_cleantalk_log_onoff_desc" date="1156440504" username="admin" version="1.2"><![CDATA[Если Вы желаете отключить запись лога проверок, то выберите Нет.]]></phrase>
 			<phrase name="setting_cleantalk_log_onoff_title" date="1156440504" username="admin" version="1.2"><![CDATA[Включить ведение лога проверок?]]></phrase>
+			<phrase name="setting_cleantalk_link_onoff_desc" date="1156440504" username="admin" version="1.2"><![CDATA[Включение этой опции разместит внизу каждой страницы Вашего сайта небольшую ссылку на наш сайт. Это позволит Вам рассказать Вашим посетителям, что вы используете CleanTalk для защиты сайта.]]></phrase>
+			<phrase name="setting_cleantalk_link_onoff_title" date="1156440504" username="admin" version="1.2"><![CDATA[Рассказать всем про CleanTalk?]]></phrase>
+			
 			<phrase name="settinggroup_cleantalk" date="1156439888" username="admin" version="1.2"><![CDATA[Anti-spam by CleanTalk]]></phrase>
 		</phrasetype>
 	</phrases>
@@ -203,6 +217,11 @@ if(class_exists('CleantalkAPI')){
 				<datatype>boolean</datatype>
 				<optioncode>yesno</optioncode>
 				<defaultvalue>1</defaultvalue>
+			</setting>
+			<setting varname="cleantalk_link_onoff" displayorder="1">
+				<datatype>boolean</datatype>
+				<optioncode>yesno</optioncode>
+				<defaultvalue>0</defaultvalue>
 			</setting>
 			<setting varname="cleantalk_log_onoff" displayorder="1">
 				<datatype>boolean</datatype>
