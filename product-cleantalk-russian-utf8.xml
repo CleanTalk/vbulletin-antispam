@@ -140,7 +140,7 @@ if(
                     }
                     $userdata->errors[] = '<font color="red">'.$comment_str.'</font>';
                     $log_str = 'Username: '.$vbulletin->GPC['username'].', email: '.$vbulletin->GPC['email'].'. '.$comment_str;
-                    if($vbulletin->options['cleantalk_log_onoff')
+                    if($vbulletin->options['cleantalk_log_onoff'])
                     {
                     	$vbulletin->db->query_write("INSERT INTO " . TABLE_PREFIX . "moderatorlog (dateline, action, threadtitle, product, ipaddress) VALUES ('".TIMENOW."', '".$vbulletin->db->escape_string($log_str)."', '', 'cleantalk', '".$vbulletin->db->escape_string(IPADDRESS)."')");
                     }
