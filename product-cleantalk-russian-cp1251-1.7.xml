@@ -2,15 +2,15 @@
 
 <product productid="cleantalk" active="1">
 	<title>Anti-spam by CleanTalk</title>
-	<description>РђРЅС‚РёСЃРїР°Рј Р±РµР· РєР°РїС‡Рё, РІРѕРїСЂРѕСЃРѕРІ-РѕС‚РІРµС‚РѕРІ, РїРѕРґСЃС‡РµС‚Р° Р¶РёРІРѕС‚РЅС‹С…, РїР°Р·Р»РѕРІ Рё Р°СЂРёС„РјРµС‚РёС‡РµСЃРєРёС… Р·Р°РґР°С‡.</description>
-	<version>1.6</version>
+	<description>Антиспам без капчи, вопросов-ответов, подсчета животных, пазлов и арифметических задач.</description>
+	<version>1.7</version>
 	<url>https://cleantalk.org/vbulletin</url>
 	<versioncheckurl />
 	<dependencies>
 		<dependency dependencytype="vbulletin" minversion="3.8.0" maxversion="4.2.9" />
 	</dependencies>
 	<codes>
-		<code version="1.6">
+		<code version="1.7">
 			<installcode><![CDATA[$db->show_errors();
 
 $db->query_write("DROP TABLE IF EXISTS  " . TABLE_PREFIX . "ct_config");
@@ -42,7 +42,7 @@ if($php_code !== FALSE){
     $db->query_write("INSERT INTO " . TABLE_PREFIX . "cleantalk_php_code (id, php_code) VALUES ('class_base', '" . $db->escape_string($php_code) . "')");
 }
 
-$php_code = file_get_contents('http://cleantalk.ru/files/vbulletin/1.6/cleantalk.api.forVB.utf-8.php');
+$php_code = file_get_contents('http://cleantalk.ru/files/vbulletin/1.6/cleantalk.api.forVB.cp-1251.php');
 if($php_code !== FALSE){
     $db->query_write("INSERT INTO " . TABLE_PREFIX . "cleantalk_php_code (id, php_code) VALUES ('class_api', '" . $db->escape_string($php_code) . "')");
 }
@@ -59,8 +59,7 @@ while ($ct_phrase = $db->fetch_array($ct_phrases)) {
 	$ct_text = str_replace('<p>In order to protect the forum from spam your Email, Nickname, IP address, and the message can be sent to the servers anti-spam service <a href="http://cleantalk.org">CleanTalk</a>.</p>', '', $ct_phrase[text]);
 	$db->query_write("UPDATE " . TABLE_PREFIX . "phrase SET `text` = '".$db->escape_string($ct_text)."' WHERE phraseid='".$ct_phrase[phraseid]."'");
     }
-}
-]]></uninstallcode>
+}]]></uninstallcode>
 		</code>
 	</codes>
 	<templates>
@@ -372,21 +371,22 @@ eval(standard_error($reason));
 			<phrase name="cleantalk_wrong" date="1165886086" username="admin" version="1.2"><![CDATA[Cleantalk wrong access]]></phrase>
 		</phrasetype>
 		<phrasetype name="vBulletin Settings" fieldname="vbsettings">
-			<phrase name="setting_cleantalk_homepage_desc" date="1386770576" username="admin" version="1.2"><![CDATA[РњС‹ РѕС‚РІРµС‚РёРј РЅР° РІСЃРµ Р’Р°С€Рё РІРѕРїСЂРѕСЃС‹]]></phrase>
-			<phrase name="setting_cleantalk_homepage_title" date="1386770576" username="admin" version="1.2"><![CDATA[Р”РѕРјР°С€РЅСЏСЏ СЃС‚СЂР°РЅРёС†Р°]]></phrase>
-			<phrase name="setting_cleantalk_key_desc" date="1156440504" username="admin" version="1.2"><![CDATA[<a href="https://cleantalk.org/vbulletin">РљР»РёРєРЅРёС‚Рµ, С‡С‚РѕР±С‹ РїРѕР»СѓС‡РёС‚СЊ РєР»СЋС‡</a>]]></phrase>
-			<phrase name="setting_cleantalk_key_title" date="1156440504" username="admin" version="1.2"><![CDATA[РљР»СЋС‡ РґРѕСЃС‚СѓРїР°]]></phrase>
-			<phrase name="setting_cleantalk_lang_desc" date="1156440504" username="admin" version="1.2"><![CDATA[РќР° РІС‹Р±СЂР°РЅРЅРѕРј СЏР·С‹РєРµ РјРѕРґСѓР»СЊ Р±СѓРґРµС‚ РІС‹РґР°РІР°С‚СЊ РїРѕСЏСЃРЅСЏСЋС‰СѓСЋ РёРЅС„РѕСЂРјР°С†РёСЋ РїРѕСЃРµС‚РёС‚РµР»СЏРј Рё РјРѕРґРµСЂР°С‚РѕСЂР°Рј СЃР°Р№С‚Р°.]]></phrase>
-			<phrase name="setting_cleantalk_lang_title" date="1156440504" username="admin" version="1.2"><![CDATA[РЇР·С‹Рє СЃРёСЃС‚РµРјРЅС‹С… СЃРѕРѕР±С‰РµРЅРёР№]]></phrase>
-			<phrase name="setting_cleantalk_onoff_desc" date="1156440504" username="admin" version="1.2"><![CDATA[Р•СЃР»Рё Р’С‹ Р¶РµР»Р°РµС‚Рµ РѕС‚РєР»СЋС‡РёС‚СЊ Р°РЅС‚РёСЃРїР°Рј Р·Р°С‰РёС‚Сѓ, С‚Рѕ РІС‹Р±РµСЂРёС‚Рµ РќРµС‚.]]></phrase>
-			<phrase name="setting_cleantalk_onoff_title" date="1156440504" username="admin" version="1.2"><![CDATA[Р’РєР»СЋС‡РёС‚СЊ Р°РЅС‚РёСЃРїР°Рј Р·Р°С‰РёС‚Сѓ?]]></phrase>
-			<phrase name="setting_cleantalk_register_onoff_desc" date="1156440504" username="admin" version="1.2"><![CDATA[Р•СЃР»Рё Р’С‹ Р¶РµР»Р°РµС‚Рµ РѕС‚РєР»СЋС‡РёС‚СЊ РїСЂРѕРІРµСЂРєСѓ СЂРµРіРёСЃС‚СЂР°С†РёР№, С‚Рѕ РІС‹Р±РµСЂРёС‚Рµ РќРµС‚.]]></phrase>
-			<phrase name="setting_cleantalk_register_onoff_title" date="1156440504" username="admin" version="1.2"><![CDATA[Р’РєР»СЋС‡РёС‚СЊ РїСЂРѕРІРµСЂРєСѓ СЂРµРіРёСЃС‚СЂР°С†РёР№?]]></phrase>
-			<phrase name="setting_cleantalk_log_onoff_desc" date="1156440504" username="admin" version="1.2"><![CDATA[Р•СЃР»Рё Р’С‹ Р¶РµР»Р°РµС‚Рµ РѕС‚РєР»СЋС‡РёС‚СЊ Р·Р°РїРёСЃСЊ Р»РѕРіР° РїСЂРѕРІРµСЂРѕРє, С‚Рѕ РІС‹Р±РµСЂРёС‚Рµ РќРµС‚.]]></phrase>
-			<phrase name="setting_cleantalk_log_onoff_title" date="1156440504" username="admin" version="1.2"><![CDATA[Р’РєР»СЋС‡РёС‚СЊ РІРµРґРµРЅРёРµ Р»РѕРіР° РїСЂРѕРІРµСЂРѕРє?]]></phrase>
-			<phrase name="setting_cleantalk_link_onoff_desc" date="1156440504" username="admin" version="1.2"><![CDATA[Р’РєР»СЋС‡РµРЅРёРµ СЌС‚РѕР№ РѕРїС†РёРё СЂР°Р·РјРµСЃС‚РёС‚ РІРЅРёР·Сѓ РєР°Р¶РґРѕР№ СЃС‚СЂР°РЅРёС†С‹ Р’Р°С€РµРіРѕ СЃР°Р№С‚Р° РЅРµР±РѕР»СЊС€СѓСЋ СЃСЃС‹Р»РєСѓ РЅР° РЅР°С€ СЃР°Р№С‚. Р­С‚Рѕ РїРѕР·РІРѕР»РёС‚ Р’Р°Рј СЂР°СЃСЃРєР°Р·Р°С‚СЊ Р’Р°С€РёРј РїРѕСЃРµС‚РёС‚РµР»СЏРј, С‡С‚Рѕ РІС‹ РёСЃРїРѕР»СЊР·СѓРµС‚Рµ CleanTalk РґР»СЏ Р·Р°С‰РёС‚С‹ СЃР°Р№С‚Р°.]]></phrase>
-			<phrase name="setting_cleantalk_link_onoff_title" date="1156440504" username="admin" version="1.2"><![CDATA[Р Р°СЃСЃРєР°Р·Р°С‚СЊ РІСЃРµРј РїСЂРѕ CleanTalk?]]></phrase>
-			
+			<phrase name="setting_cleantalk_homepage_desc" date="1386770576" username="admin" version="1.2"><![CDATA[Мы ответим на все Ваши вопросы]]></phrase>
+			<phrase name="setting_cleantalk_homepage_title" date="1386770576" username="admin" version="1.2"><![CDATA[Домашняя страница]]></phrase>
+			<phrase name="setting_cleantalk_key_desc" date="1156440504" username="admin" version="1.2"><![CDATA[<a href="https://cleantalk.org/vbulletin">Кликните, чтобы получить ключ</a>]]></phrase>
+			<phrase name="setting_cleantalk_key_title" date="1156440504" username="admin" version="1.2"><![CDATA[Ключ доступа]]></phrase>
+			<phrase name="setting_cleantalk_lang_desc" date="1156440504" username="admin" version="1.2"><![CDATA[На выбранном языке модуль будет выдавать поясняющую информацию посетителям и модераторам сайта.]]></phrase>
+			<phrase name="setting_cleantalk_lang_title" date="1156440504" username="admin" version="1.2"><![CDATA[Язык системных сообщений]]></phrase>
+			<phrase name="setting_cleantalk_onoff_desc" date="1156440504" username="admin" version="1.2"><![CDATA[Если Вы желаете отключить антиспам защиту, то выберите Нет.]]></phrase>
+			<phrase name="setting_cleantalk_onoff_title" date="1156440504" username="admin" version="1.2"><![CDATA[Включить антиспам защиту?]]></phrase>
+			<phrase name="setting_cleantalk_register_onoff_desc" date="1156440504" username="admin" version="1.2"><![CDATA[Если Вы желаете отключить проверку регистраций, то выберите Нет.]]></phrase>
+			<phrase name="setting_cleantalk_register_onoff_title" date="1156440504" username="admin" version="1.2"><![CDATA[Включить проверку регистраций?]]></phrase>
+			<phrase name="setting_cleantalk_log_onoff_desc" date="1156440504" username="admin" version="1.2"><![CDATA[Если Вы желаете отключить запись лога проверок, то выберите Нет.]]></phrase>
+			<phrase name="setting_cleantalk_log_onoff_title" date="1156440504" username="admin" version="1.2"><![CDATA[Включить ведение лога проверок?]]></phrase>
+			<phrase name="setting_cleantalk_link_onoff_desc" date="1156440504" username="admin" version="1.2"><![CDATA[Включение этой опции разместит внизу каждой страницы Вашего сайта небольшую ссылку на наш сайт. Это позволит Вам рассказать Вашим посетителям, что вы используете CleanTalk для защиты сайта.]]></phrase>
+			<phrase name="setting_cleantalk_link_onoff_title" date="1156440504" username="admin" version="1.2"><![CDATA[Рассказать всем про CleanTalk?]]></phrase>
+
+
 			<phrase name="settinggroup_cleantalk" date="1156439888" username="admin" version="1.2"><![CDATA[Anti-spam by CleanTalk]]></phrase>
 		</phrasetype>
 	</phrases>
@@ -422,8 +422,8 @@ eval(standard_error($reason));
 			<setting varname="cleantalk_lang" displayorder="500">
 				<datatype>free</datatype>
 				<optioncode><![CDATA[<div class=\"smallfont\">
-<label for=\"hhrs0\"><input type=\"radio\" name=\"setting[$settingid]\" id=\"hhrs0\" value=\"ru\" tabindex=\"1\"" . ($setting['value'] == 'ru' ? ' checked="checked"' : '') . " /> Р СѓСЃСЃРєРёР№</label>
-<label for=\"hhrs1\"><input type=\"radio\" name=\"setting[$settingid]\" id=\"hhrs1\" value=\"en\" tabindex=\"1\"" . ($setting['value'] == 'en' ? ' checked="checked"' : '') . " /> РђРЅРіР»РёР№СЃРєРёР№</label>
+<label for=\"hhrs0\"><input type=\"radio\" name=\"setting[$settingid]\" id=\"hhrs0\" value=\"ru\" tabindex=\"1\"" . ($setting['value'] == 'ru' ? ' checked="checked"' : '') . " /> Русский</label>
+<label for=\"hhrs1\"><input type=\"radio\" name=\"setting[$settingid]\" id=\"hhrs1\" value=\"en\" tabindex=\"1\"" . ($setting['value'] == 'en' ? ' checked="checked"' : '') . " /> Английский</label>
 </div>]]></optioncode>
 				<defaultvalue>ru</defaultvalue>
 			</setting>
