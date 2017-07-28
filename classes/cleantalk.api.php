@@ -26,7 +26,6 @@ class CleantalkAPI {
 	}
     else
         return '';
-    }
 }
 
     /**
