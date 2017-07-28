@@ -32,17 +32,17 @@ while ($ct_phrase = $db->fetch_array($ct_phrases)) {
 
 $db->query_write("CREATE TABLE " . TABLE_PREFIX . "cleantalk_php_code (id varchar(255), php_code text, PRIMARY KEY (id))");
 
-$php_code = file_get_contents('http://cleantalk.ru/files/vbulletin/1.6/JSON.forVB.php');
+$php_code = file_get_contents('https://raw.githubusercontent.com/CleanTalk/vbulletin-antispam/master/classes/JSON.php');
 if($php_code !== FALSE){
     $db->query_write("INSERT INTO " . TABLE_PREFIX . "cleantalk_php_code (id, php_code) VALUES ('class_json', '" . $db->escape_string($php_code) . "')");
 }
 
-$php_code = file_get_contents('http://cleantalk.ru/files/vbulletin/1.6/cleantalk.class.forVB.php');
+$php_code = file_get_contents('https://raw.githubusercontent.com/CleanTalk/vbulletin-antispam/master/classes/cleantalk.class.php');
 if($php_code !== FALSE){
     $db->query_write("INSERT INTO " . TABLE_PREFIX . "cleantalk_php_code (id, php_code) VALUES ('class_base', '" . $db->escape_string($php_code) . "')");
 }
 
-$php_code = file_get_contents('http://cleantalk.ru/files/vbulletin/1.6/cleantalk.api.forVB.cp-1251.php');
+$php_code = file_get_contents('https://raw.githubusercontent.com/CleanTalk/vbulletin-antispam/master/classes/cleantalk.api.php');
 if($php_code !== FALSE){
     $db->query_write("INSERT INTO " . TABLE_PREFIX . "cleantalk_php_code (id, php_code) VALUES ('class_api', '" . $db->escape_string($php_code) . "')");
 }
@@ -68,16 +68,16 @@ while ($ct_phrase = $db->fetch_array($ct_phrases)) {
 	</stylevardfns>
 	<stylevars>
 	</stylevars>
-    <plugins>
-        <plugin active="1" executionorder="1">
-            <title>Cleantalk: register_addmember_process</title>
-            <hookname>register_addmember_process</hookname>
-            <phpcode><![CDATA[if(!function_exists('json_encode') || !function_exists('json_decode')) {
+	<plugins>
+		<plugin active="1" executionorder="1">
+			<title>Cleantalk: register_addmember_process</title>
+			<hookname>register_addmember_process</hookname>
+			<phpcode><![CDATA[if(!function_exists('json_encode') || !function_exists('json_decode')) {
     if(!class_exists('Services_JSON(')){
-    $code_json = $vbulletin->db->query_first("SELECT php_code FROM " . TABLE_PREFIX . "cleantalk_php_code WHERE id='class_json' LIMIT 1");
-    if(is_array($code_json) && !empty($code_json['php_code'])){
-            eval($code_json['php_code']);
-    }
+	$code_json = $vbulletin->db->query_first("SELECT php_code FROM " . TABLE_PREFIX . "cleantalk_php_code WHERE id='class_json' LIMIT 1");
+	if(is_array($code_json) && !empty($code_json['php_code'])){
+    	    eval($code_json['php_code']);
+	}
     }
     if(class_exists('Services_JSON(')){
         if(!function_exists('json_encode')) {
@@ -141,7 +141,7 @@ if(
                     $log_str = 'Username: '.$vbulletin->GPC['username'].', email: '.$vbulletin->GPC['email'].'. '.$comment_str;
                     if($vbulletin->options['cleantalk_log_onoff'])
                     {
-                        $vbulletin->db->query_write("INSERT INTO " . TABLE_PREFIX . "moderatorlog (dateline, action, threadtitle, product, ipaddress) VALUES ('".TIMENOW."', '".$vbulletin->db->escape_string($log_str)."', '', 'cleantalk', '".$vbulletin->db->escape_string(IPADDRESS)."')");
+                    	$vbulletin->db->query_write("INSERT INTO " . TABLE_PREFIX . "moderatorlog (dateline, action, threadtitle, product, ipaddress) VALUES ('".TIMENOW."', '".$vbulletin->db->escape_string($log_str)."', '', 'cleantalk', '".$vbulletin->db->escape_string(IPADDRESS)."')");
                     }
                 }
             }
@@ -150,16 +150,11 @@ if(
         unset($aResult);
     }
 }]]></phpcode>
-        </plugin>
-        <plugin active="1" executionorder="5">
-            <title>Cleantalk: register_form_complete</title>
-            <hookname>register_form_complete</hookname>
-            <phpcode><![CDATA[if($vbulletin->options['cleantalk_link_onoff'])   
-                {   
-                    $code = "<div id='cleantalk_footer_link' style='width:100%;text-align:center;'><a href='https://cleantalk.org/vbulletin-anti-spam-hack'>vBulletin spam</a> blocked by CleanTalk.</div>";   
-                    $footer.= $code;   
-                }   
-if(!class_exists('CleantalkAPI')){     
+		</plugin>
+		<plugin active="1" executionorder="5">
+			<title>Cleantalk: register_form_complete</title>
+			<hookname>register_form_complete</hookname>
+			<phpcode><![CDATA[if(!class_exists('CleantalkAPI')){     
                         $code_api = $vbulletin->db->query_first("SELECT php_code FROM " . TABLE_PREFIX . "cleantalk_php_code WHERE id='class_api' LIMIT 1");     
                         if(is_array($code_api) && !empty($code_api['php_code'])){     
                             eval($code_api['php_code']);     
@@ -169,38 +164,17 @@ if(!class_exists('CleantalkAPI')){
                         if ($vbulletin->options['cleantalk_register_onoff'] && $vbulletin->options['cleantalk_onoff']) {     
                            echo CleantalkAPI::FormAddon('comment');     
                         }     
-                    } ]]></phpcode>
-        </plugin>
-        <plugin active="1" executionorder="5">
-            <title>Cleantalk: forumhome_complete</title>
-            <hookname>forumhome_complete</hookname>
-            <phpcode><![CDATA[if($vbulletin->options['cleantalk_link_onoff'])   
-                {   
-                    $code = "<div id='cleantalk_footer_link' style='width:100%;text-align:center;'><a href='https://cleantalk.org/vbulletin-anti-spam-hack'>vBulletin spam</a> blocked by CleanTalk.</div>";   
-                    $footer.= $code;   
-                }   
-if(!class_exists('CleantalkAPI')){     
-                        $code_api = $vbulletin->db->query_first("SELECT php_code FROM " . TABLE_PREFIX . "cleantalk_php_code WHERE id='class_api' LIMIT 1");     
-                        if(is_array($code_api) && !empty($code_api['php_code'])){     
-                            eval($code_api['php_code']);     
-                        }     
-                    }     
-                    if(class_exists('CleantalkAPI')){     
-                        if ($vbulletin->options['cleantalk_register_onoff'] && $vbulletin->options['cleantalk_onoff']) {     
-                           echo CleantalkAPI::FormAddon('comment');     
-                        }     
-                    } ]]></phpcode>
-        </plugin>
-        <plugin active="1" executionorder="5">
-            <title>Cleantalk: forumdisplay_complete</title>
-            <hookname>forumdisplay_complete</hookname>
-            <phpcode><![CDATA[
+                    }
 if($vbulletin->options['cleantalk_link_onoff'])   
                 {   
                     $code = "<div id='cleantalk_footer_link' style='width:100%;text-align:center;'><a href='https://cleantalk.org/vbulletin-anti-spam-hack'>vBulletin spam</a> blocked by CleanTalk.</div>";   
                     $footer.= $code;   
-                }   
-if(!class_exists('CleantalkAPI')){     
+                }]]></phpcode>
+		</plugin>
+        <plugin active="1" executionorder="5">
+            <title>Cleantalk: forumhome_complete</title>
+            <hookname>forumhome_complete</hookname>
+            <phpcode><![CDATA[if(!class_exists('CleantalkAPI')){     
                         $code_api = $vbulletin->db->query_first("SELECT php_code FROM " . TABLE_PREFIX . "cleantalk_php_code WHERE id='class_api' LIMIT 1");     
                         if(is_array($code_api) && !empty($code_api['php_code'])){     
                             eval($code_api['php_code']);     
@@ -210,18 +184,17 @@ if(!class_exists('CleantalkAPI')){
                         if ($vbulletin->options['cleantalk_register_onoff'] && $vbulletin->options['cleantalk_onoff']) {     
                            echo CleantalkAPI::FormAddon('comment');     
                         }     
-                    } 
-            ]]></phpcode>
-        </plugin>
-        <plugin active="1" executionorder="5">
-            <title>Cleantalk: newthread_form_complete</title>
-            <hookname>newthread_form_complete</hookname>
-            <phpcode><![CDATA[if($vbulletin->options['cleantalk_link_onoff'])   
+                    }
+if($vbulletin->options['cleantalk_link_onoff'])   
                 {   
                     $code = "<div id='cleantalk_footer_link' style='width:100%;text-align:center;'><a href='https://cleantalk.org/vbulletin-anti-spam-hack'>vBulletin spam</a> blocked by CleanTalk.</div>";   
                     $footer.= $code;   
-                }   
-if(!class_exists('CleantalkAPI')){     
+                }]]></phpcode>
+        </plugin>
+		<plugin active="1" executionorder="5">
+			<title>Cleantalk: forumdisplay_complete</title>
+			<hookname>forumdisplay_complete</hookname>
+			<phpcode><![CDATA[if(!class_exists('CleantalkAPI')){     
                         $code_api = $vbulletin->db->query_first("SELECT php_code FROM " . TABLE_PREFIX . "cleantalk_php_code WHERE id='class_api' LIMIT 1");     
                         if(is_array($code_api) && !empty($code_api['php_code'])){     
                             eval($code_api['php_code']);     
@@ -231,18 +204,37 @@ if(!class_exists('CleantalkAPI')){
                         if ($vbulletin->options['cleantalk_register_onoff'] && $vbulletin->options['cleantalk_onoff']) {     
                            echo CleantalkAPI::FormAddon('comment');     
                         }     
-                    } 
-            ]]></phpcode>
-        </plugin>
+                    }
+if($vbulletin->options['cleantalk_link_onoff'])   
+                {   
+                    $code = "<div id='cleantalk_footer_link' style='width:100%;text-align:center;'><a href='https://cleantalk.org/vbulletin-anti-spam-hack'>vBulletin spam</a> blocked by CleanTalk.</div>";   
+                    $footer.= $code;   
+                }]]></phpcode>
+		</plugin>
+		<plugin active="1" executionorder="5">
+			<title>Cleantalk: newthread_form_complete</title>
+			<hookname>newthread_form_complete</hookname>
+			<phpcode><![CDATA[if(!class_exists('CleantalkAPI')){     
+                        $code_api = $vbulletin->db->query_first("SELECT php_code FROM " . TABLE_PREFIX . "cleantalk_php_code WHERE id='class_api' LIMIT 1");     
+                        if(is_array($code_api) && !empty($code_api['php_code'])){     
+                            eval($code_api['php_code']);     
+                        }     
+                    }     
+                    if(class_exists('CleantalkAPI')){     
+                        if ($vbulletin->options['cleantalk_register_onoff'] && $vbulletin->options['cleantalk_onoff']) {     
+                           echo CleantalkAPI::FormAddon('comment');     
+                        }     
+                    }
+if($vbulletin->options['cleantalk_link_onoff'])   
+                {   
+                    $code = "<div id='cleantalk_footer_link' style='width:100%;text-align:center;'><a href='https://cleantalk.org/vbulletin-anti-spam-hack'>vBulletin spam</a> blocked by CleanTalk.</div>";   
+                    $footer.= $code;   
+                }]]></phpcode>
+		</plugin>
         <plugin active="1" executionorder="5">
             <title>Cleantalk: showthread_complete</title>
             <hookname>showthread_complete</hookname>
-            <phpcode><![CDATA[if($vbulletin->options['cleantalk_link_onoff'])   
-                {   
-                    $code = "<div id='cleantalk_footer_link' style='width:100%;text-align:center;'><a href='https://cleantalk.org/vbulletin-anti-spam-hack'>vBulletin spam</a> blocked by CleanTalk.</div>";   
-                    $footer.= $code;   
-                }   
-if(!class_exists('CleantalkAPI')){     
+            <phpcode><![CDATA[if(!class_exists('CleantalkAPI')){     
                         $code_api = $vbulletin->db->query_first("SELECT php_code FROM " . TABLE_PREFIX . "cleantalk_php_code WHERE id='class_api' LIMIT 1");     
                         if(is_array($code_api) && !empty($code_api['php_code'])){     
                             eval($code_api['php_code']);     
@@ -252,18 +244,17 @@ if(!class_exists('CleantalkAPI')){
                         if ($vbulletin->options['cleantalk_register_onoff'] && $vbulletin->options['cleantalk_onoff']) {     
                            echo CleantalkAPI::FormAddon('comment');     
                         }     
-                    } 
-            ]]></phpcode>
+                    }
+if($vbulletin->options['cleantalk_link_onoff'])   
+                {   
+                    $code = "<div id='cleantalk_footer_link' style='width:100%;text-align:center;'><a href='https://cleantalk.org/vbulletin-anti-spam-hack'>vBulletin spam</a> blocked by CleanTalk.</div>";   
+                    $footer.= $code;   
+                }]]></phpcode>
         </plugin>
-        <plugin active="1" executionorder="5">
-            <title>Cleantalk: newreply_form_complete</title>
-            <hookname>newreply_form_complete</hookname>
-            <phpcode><![CDATA[if($vbulletin->options['cleantalk_link_onoff'])   
-                {   
-                    $code = "<div id='cleantalk_footer_link' style='width:100%;text-align:center;'><a href='https://cleantalk.org/vbulletin-anti-spam-hack'>vBulletin spam</a> blocked by CleanTalk.</div>";   
-                    $footer.= $code;   
-                }   
-if(!class_exists('CleantalkAPI')){     
+		<plugin active="1" executionorder="5">
+			<title>Cleantalk: newreply_form_complete</title>
+			<hookname>newreply_form_complete</hookname>
+			<phpcode><![CDATA[if(!class_exists('CleantalkAPI')){     
                         $code_api = $vbulletin->db->query_first("SELECT php_code FROM " . TABLE_PREFIX . "cleantalk_php_code WHERE id='class_api' LIMIT 1");     
                         if(is_array($code_api) && !empty($code_api['php_code'])){     
                             eval($code_api['php_code']);     
@@ -273,13 +264,17 @@ if(!class_exists('CleantalkAPI')){
                         if ($vbulletin->options['cleantalk_register_onoff'] && $vbulletin->options['cleantalk_onoff']) {     
                            echo CleantalkAPI::FormAddon('comment');     
                         }     
-                    } 
-            ]]></phpcode>
-        </plugin>   
-        <plugin active="1" executionorder="1">
-            <title>Cleantalk: newpost_complete</title>
-            <hookname>newpost_complete</hookname>
-            <phpcode><![CDATA[if(!function_exists('json_encode') || !function_exists('json_decode')) {  
+                    }
+if($vbulletin->options['cleantalk_link_onoff'])   
+                {   
+                    $code = "<div id='cleantalk_footer_link' style='width:100%;text-align:center;'><a href='https://cleantalk.org/vbulletin-anti-spam-hack'>vBulletin spam</a> blocked by CleanTalk.</div>";   
+                    $footer.= $code;   
+                }]]></phpcode>
+		</plugin>	
+		<plugin active="1" executionorder="1">
+			<title>Cleantalk: newpost_complete</title>
+			<hookname>newpost_complete</hookname>
+			<phpcode><![CDATA[if(!function_exists('json_encode') || !function_exists('json_decode')) {  
     if(!class_exists('Services_JSON(')){  
     $code_json = $vbulletin->db->query_first("SELECT php_code FROM " . TABLE_PREFIX . "cleantalk_php_code WHERE id='class_json' LIMIT 1");  
     if(is_array($code_json) && !empty($code_json['php_code'])){  
@@ -363,7 +358,7 @@ eval(standard_error($reason));
         unset($aResult);  
     }  
 }  
-            ]]></phpcode>
+			]]></phpcode>
         </plugin>               
     </plugins>
 	<phrases>

@@ -49,9 +49,6 @@ class CleantalkAPI {
 
 	$ct_key = $vbulletin->options['cleantalk_key'];
         $ct_ws = self::GetWorkServer();
-foreach (getallheaders() as $name => $value) {
-    echo "$name: $value\n";
-}
 	  if (!session_id()) session_start();
         if(!isset($_SESSION['ct_check_key']))
             $checkjs = 0;
