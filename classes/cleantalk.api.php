@@ -12,10 +12,9 @@ class CleantalkAPI {
     if($sType != 'register' && $sType != 'comment')
         return '';
     if ($vbulletin->options['cleantalk_register_onoff'] && $vbulletin->options['cleantalk_onoff']) {
-        if (!session_id()) session_start();
-        $_SESSION['ct_submit_' . ($sType == 'register' ? 'register' : 'comment'). '_time'] = time();
+        $vbulletin->session->vars['ct_submit_' . ($sType == 'register' ? 'register' : 'comment'). '_time'] = time();
         $ct_check_value = md5($vbulletin->options['cleantalk_key']);
-        $_SESSION['ct_check_key'] = $ct_check_value;
+        $vbulletin->session->vars['ct_check_key'] = $ct_check_value;
         if (!isset($_COOKIE['ct_checkjs']))
         $ct_template_addon_body = '
 <script type="text/javascript">
@@ -57,11 +56,11 @@ else $ct_template_addon_body = '';
 
         if (!session_id()) session_start();
 
-        if(!isset($_SESSION['ct_check_key']))
+        if(!isset($vbulletin->session->vars['ct_check_key']))
             $checkjs = 0;
         elseif(!isset($_COOKIE['ct_checkjs']))
             $checkjs = NULL;
-        elseif($_COOKIE['ct_checkjs'] == $_SESSION['ct_check_key'])
+        elseif($_COOKIE['ct_checkjs'] == $vbulletin->session->vars['ct_check_key'])
             $checkjs = 1;
         else
             $checkjs = 0;
@@ -112,8 +111,8 @@ else $ct_template_addon_body = '';
         $ct_submit_time = NULL;
         switch ($type) {
             case 'comment':
-                if(isset($_SESSION['ct_submit_comment_time']))
-                    $ct_submit_time = time() - $_SESSION['ct_submit_comment_time'];
+                if(isset($vbulletin->session->vars['ct_submit_comment_time']))
+                    $ct_submit_time = time() - $vbulletin->session->vars['ct_submit_comment_time'];
                 $timelabels_key = 'mail_error_comment';
                 $ct_request->submit_time = $ct_submit_time;
 
@@ -135,8 +134,8 @@ else $ct_template_addon_body = '';
                 $ct_result = $ct->isAllowMessage($ct_request);
                 break;
             case 'register':
-                if(isset($_SESSION['ct_submit_register_time']))
-                    $ct_submit_time = time() - $_SESSION['ct_submit_register_time'];
+                if(isset($vbulletin->session->vars['ct_submit_register_time']))
+                    $ct_submit_time = time() - $vbulletin->session->vars['ct_submit_register_time'];
 
                 $timelabels_key = 'mail_error_reg';
                 $ct_request->submit_time = $ct_submit_time;
