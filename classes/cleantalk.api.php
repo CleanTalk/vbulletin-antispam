@@ -16,13 +16,15 @@ class CleantalkAPI {
         $ct_check_value = md5($vbulletin->options['cleantalk_key']);
         $vbulletin->session->vars['ct_check_key'] = $ct_check_value;
         if (!isset($_COOKIE['ct_checkjs']))
-        $ct_template_addon_body = '
-		<script type="text/javascript">
-		document.cookie =
-		 "ct_checkjs='.$ct_check_value.'; expires=1; path=/"
-		</script>
-		';
-		return $ct_template_addon_body;
+		{
+			$ct_template_addon_body = '
+			<script type="text/javascript">
+			document.cookie =
+			 "ct_checkjs='.$ct_check_value.'; expires=1; path=/"
+			</script>
+			';
+			return $ct_template_addon_body;
+		}
 	}
     else
         return '';
