@@ -3,7 +3,7 @@
 <product productid="cleantalk" active="1">
 	<title>Anti-spam by CleanTalk</title>
 	<description>No Captcha, no questions, no counting animals, no puzzles, no math.</description>
-	<version>1.7version>
+	<version>1.7</version>
 	<url>https://cleantalk.org/vbulletin</url>
 	<versioncheckurl />
 	<dependencies>
