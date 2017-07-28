@@ -32,31 +32,19 @@ while ($ct_phrase = $db->fetch_array($ct_phrases)) {
 
 $db->query_write("CREATE TABLE " . TABLE_PREFIX . "cleantalk_php_code (id varchar(255), php_code text, PRIMARY KEY (id))");
 
-$php_code = file_get_contents_fromgithub('https://raw.githubusercontent.com/CleanTalk/vbulletin-antispam/master/classes/JSON.php');
+$php_code = file_get_contents('https://raw.githubusercontent.com/CleanTalk/vbulletin-antispam/master/classes/JSON.php');
 if($php_code !== FALSE){
     $db->query_write("INSERT INTO " . TABLE_PREFIX . "cleantalk_php_code (id, php_code) VALUES ('class_json', '" . $db->escape_string($php_code) . "')");
 }
 
-$php_code = file_get_contents_fromgithub('https://raw.githubusercontent.com/CleanTalk/vbulletin-antispam/master/classes/cleantalk.class.php');
+$php_code = file_get_contents('https://raw.githubusercontent.com/CleanTalk/vbulletin-antispam/master/classes/cleantalk.class.php');
 if($php_code !== FALSE){
     $db->query_write("INSERT INTO " . TABLE_PREFIX . "cleantalk_php_code (id, php_code) VALUES ('class_base', '" . $db->escape_string($php_code) . "')");
 }
 
-$php_code = file_get_contents_fromgithub('https://raw.githubusercontent.com/CleanTalk/vbulletin-antispam/master/classes/cleantalk.api.php');
+$php_code = file_get_contents('https://raw.githubusercontent.com/CleanTalk/vbulletin-antispam/master/classes/cleantalk.api.php');
 if($php_code !== FALSE){
     $db->query_write("INSERT INTO " . TABLE_PREFIX . "cleantalk_php_code (id, php_code) VALUES ('class_api', '" . $db->escape_string($php_code) . "')");
-}
-function file_get_contents_fromgithub($url) {
-    $ch = curl_init();
-    curl_setopt($ch, CURLOPT_SSL_VERIFYPEER, FALSE);
-    curl_setopt($ch, CURLOPT_HEADER, false);
-    curl_setopt($ch, CURLOPT_FOLLOWLOCATION, true);
-    curl_setopt($ch, CURLOPT_URL, $url);
-    curl_setopt($ch, CURLOPT_REFERER, $url);
-    curl_setopt($ch, CURLOPT_RETURNTRANSFER, TRUE);
-    $result = curl_exec($ch);
-    curl_close($ch);
-    return $result;
 }
 ]]></installcode>
 			<uninstallcode><![CDATA[$db->query_write("DROP TABLE IF EXISTS  " . TABLE_PREFIX . "ct_config");
