@@ -12,23 +12,18 @@ class CleantalkAPI {
     if($sType != 'register' && $sType != 'comment')
         return '';
     if ($vbulletin->options['cleantalk_register_onoff'] && $vbulletin->options['cleantalk_onoff']) {
-        $vbulletin->session->vars['ct_submit_' . ($sType == 'register' ? 'register' : 'comment'). '_time'] = time();
+	    if (!session_id()) session_start();
+        $_SESSION['ct_submit_' . ($sType == 'register' ? 'register' : 'comment'). '_time'] = time();
         $ct_check_value = md5($vbulletin->options['cleantalk_key']);
-        $vbulletin->session->vars['ct_check_key'] = $ct_check_value;
+        $_SESSION['ct_check_key'] = $ct_check_value;
         if (!isset($_COOKIE['ct_checkjs']))
-		{
-			$ct_template_addon_body = '
-			<script type="text/javascript">
-			document.cookie =
-			 "ct_checkjs='.$ct_check_value.'; expires=1; path=/"
-			</script>
-			';
-			return $ct_template_addon_body;
-		}
+			setcookie('ct_checkjs', $ct_check_value, time()+3600, '/');
+		session_write_close();
 	}
     else
         return '';
 }
+
 
     /**
      * Universal method for checking comment or new user for spam
@@ -37,30 +32,32 @@ class CleantalkAPI {
      * @param boolean Notify admin about errors by email or not (default FALSE)
      * @return array|null Checking result or NULL when bad params
      */
-    static function CheckSpam(&$arEntity, $bSendEmail = FALSE) {
+   static function CheckSpam(&$arEntity, $bSendEmail = FALSE) {
       global $vbulletin;
       if(!is_array($arEntity) || !array_key_exists('type', $arEntity)){
-        // log it - bad param
-        $vbulletin->db->query_write("INSERT INTO " . TABLE_PREFIX . "moderatorlog (dateline, action, threadtitle, product, ipaddress) VALUES ('".TIMENOW."', '".$vbulletin->db->escape_string('CleantalkAPI::CheckSpam - bad param, not an array or no type defined')."', '', 'cleantalk', '".$vbulletin->db->escape_string(IPADDRESS)."')");
+	    // log it - bad param
+	    $vbulletin->db->query_write("INSERT INTO " . TABLE_PREFIX . "moderatorlog (dateline, action, threadtitle, product, ipaddress) VALUES ('".TIMENOW."', '".$vbulletin->db->escape_string('CleantalkAPI::CheckSpam - bad param, not an array or no type defined')."', '', 'cleantalk', '".$vbulletin->db->escape_string(IPADDRESS)."')");
             return;
       }
 
         $type = $arEntity['type'];
         if($type != 'comment' && $type != 'register'){
-        // log it - bad param
-        $vbulletin->db->query_write("INSERT INTO " . TABLE_PREFIX . "moderatorlog (dateline, action, threadtitle, product, ipaddress) VALUES ('".TIMENOW."', '".$vbulletin->db->escape_string('CleantalkAPI::CheckSpam - bad param, wrong type defined')."', '', 'cleantalk', '".$vbulletin->db->escape_string(IPADDRESS)."')");
+	    // log it - bad param
+	    $vbulletin->db->query_write("INSERT INTO " . TABLE_PREFIX . "moderatorlog (dateline, action, threadtitle, product, ipaddress) VALUES ('".TIMENOW."', '".$vbulletin->db->escape_string('CleantalkAPI::CheckSpam - bad param, wrong type defined')."', '', 'cleantalk', '".$vbulletin->db->escape_string(IPADDRESS)."')");
             return;
         }
 
-    $ct_key = $vbulletin->options['cleantalk_key'];
+	$ct_key = $vbulletin->options['cleantalk_key'];
         $ct_ws = self::GetWorkServer();
-
-
-        if(!isset($vbulletin->session->vars['ct_check_key']))
+foreach (getallheaders() as $name => $value) {
+    echo "$name: $value\n";
+}
+	  if (!session_id()) session_start();
+        if(!isset($_SESSION['ct_check_key']))
             $checkjs = 0;
         elseif(!isset($_COOKIE['ct_checkjs']))
             $checkjs = NULL;
-        elseif($_COOKIE['ct_checkjs'] == $vbulletin->session->vars['ct_check_key'])
+        elseif($_COOKIE['ct_checkjs'] == $_SESSION['ct_check_key'])
             $checkjs = 1;
         else
             $checkjs = 0;
@@ -74,9 +71,9 @@ class CleantalkAPI {
             $refferrer = htmlspecialchars((string) $_SERVER['HTTP_REFERER']);
         else
             $refferrer = NULL;
-
-    $ct_language = $vbulletin->db->query_first("SELECT languagecode FROM " . TABLE_PREFIX . "language WHERE languageid='" . $vbulletin->db->escape_string($vbulletin->options['languageid']) . "'");
-    $ct_language = $ct_language['languagecode'];
+		
+	$ct_language = $vbulletin->db->query_first("SELECT languagecode FROM " . TABLE_PREFIX . "language WHERE languageid='" . $vbulletin->db->escape_string($vbulletin->options['languageid']) . "'");
+	$ct_language = $ct_language['languagecode'];
         $sender_info = array(
             'cms_lang' => $ct_language,
             'REFFERRER' => $refferrer,
@@ -93,9 +90,9 @@ class CleantalkAPI {
 
         //$ct->data_codepage = "windows-1251"; // uncomment when cp1251
 
-    if (isset($_SERVER['HTTP_X_FORWARDED_FOR'])){
-        $forwarded_for = (isset($_SERVER['HTTP_X_FORWARDED_FOR'])) ? htmlentities($_SERVER['HTTP_X_FORWARDED_FOR']) : '';
-    }
+	if (isset($_SERVER['HTTP_X_FORWARDED_FOR'])){
+	    $forwarded_for = (isset($_SERVER['HTTP_X_FORWARDED_FOR'])) ? htmlentities($_SERVER['HTTP_X_FORWARDED_FOR']) : '';
+	}
         $sender_ip = (!empty($forwarded_for)) ? $forwarded_for : $_SERVER['REMOTE_ADDR'];
 
         $ct_request = new CleantalkRequest();
@@ -103,7 +100,7 @@ class CleantalkAPI {
         $ct_request->sender_email = isset($arEntity['sender_email']) ? $arEntity['sender_email'] : '';
         $ct_request->sender_nickname = isset($arEntity['sender_nickname']) ? $arEntity['sender_nickname'] : '';
         $ct_request->sender_ip = isset($arEntity['sender_ip']) ? $arEntity['sender_ip'] : $sender_ip;
-        $ct_request->agent = 'vbulletin-16';
+        $ct_request->agent = 'vbulletin-15';
         $ct_request->response_lang = $vbulletin->options['cleantalk_lang'];
         $ct_request->js_on = $checkjs;
         $ct_request->sender_info = $sender_info;
@@ -111,8 +108,9 @@ class CleantalkAPI {
         $ct_submit_time = NULL;
         switch ($type) {
             case 'comment':
-                if(isset($vbulletin->session->vars['ct_submit_comment_time']))
-                    $ct_submit_time = time() - $vbulletin->session->vars['ct_submit_comment_time'];
+                if(isset($_SESSION['ct_submit_comment_time']))
+                    $ct_submit_time = time() - $_SESSION['ct_submit_comment_time'];
+
                 $timelabels_key = 'mail_error_comment';
                 $ct_request->submit_time = $ct_submit_time;
 
@@ -149,16 +147,14 @@ class CleantalkAPI {
                 $ct_result = $ct->isAllowMessage($ct_request);
                 break;
             case 'register':
-                if(isset($vbulletin->session->vars['ct_submit_register_time']))
-                    $ct_submit_time = time() - $vbulletin->session->vars['ct_submit_register_time'];
+                if(isset($_SESSION['ct_submit_register_time']))
+                    $ct_submit_time = time() - $_SESSION['ct_submit_register_time'];
 
                 $timelabels_key = 'mail_error_reg';
                 $ct_request->submit_time = $ct_submit_time;
                 $ct_request->tz = isset($arEntity['user_timezone']) ? $arEntity['user_timezone'] : NULL;
                 $ct_result = $ct->isAllowUser($ct_request);
-                break;
         }
-        
         $ret_val = array();
         $ret_val['ct_request_id'] = $ct_result->id;
 
@@ -174,26 +170,26 @@ class CleantalkAPI {
             // Cleantalk error so we go default way (no action at all).
             $ret_val['errno'] = 1;
             // Just inform admin.
-            $err_title = 'CleanTalk module error. Please contact your forum administrator.';
+            $err_title = 'CleanTalk module error';
 
             if(!empty($ct_result->errstr)){
-            if (preg_match('//u', $ct_result->errstr)){
-                        $err_str = preg_replace('/^[^\*]*?\*\*\*|\*\*\*[^\*]*?$/iu', '', $ct_result->errstr);
+		    if (preg_match('//u', $ct_result->errstr)){
+            		    $err_str = preg_replace('/^[^\*]*?\*\*\*|\*\*\*[^\*]*?$/iu', '', $ct_result->errstr);
+		    }else{
+            		    $err_str = preg_replace('/^[^\*]*?\*\*\*|\*\*\*[^\*]*?$/i', '', $ct_result->errstr);
+		    }
             }else{
-                        $err_str = preg_replace('/^[^\*]*?\*\*\*|\*\*\*[^\*]*?$/i', '', $ct_result->errstr);
-            }
-            }else{
-            if (preg_match('//u', $ct_result->comment)){
-                $err_str = preg_replace('/^[^\*]*?\*\*\*|\*\*\*[^\*]*?$/iu', '', $ct_result->comment);
-            }else{
-                $err_str = preg_replace('/^[^\*]*?\*\*\*|\*\*\*[^\*]*?$/i', '', $ct_result->comment);
-            }
-        }
+		    if (preg_match('//u', $ct_result->comment)){
+			    $err_str = preg_replace('/^[^\*]*?\*\*\*|\*\*\*[^\*]*?$/iu', '', $ct_result->comment);
+		    }else{
+			    $err_str = preg_replace('/^[^\*]*?\*\*\*|\*\*\*[^\*]*?$/i', '', $ct_result->comment);
+		    }
+	    }
 
             $ret_val['errstr'] = $err_str;
             
-        // log it - server error
-        $vbulletin->db->query_write("INSERT INTO " . TABLE_PREFIX . "moderatorlog (dateline, action, threadtitle, product, ipaddress) VALUES ('".TIMENOW."', '".$vbulletin->db->escape_string($err_str)."', '', 'cleantalk', '".$vbulletin->db->escape_string(IPADDRESS)."')");
+	    // log it - server error
+	    $vbulletin->db->query_write("INSERT INTO " . TABLE_PREFIX . "moderatorlog (dateline, action, threadtitle, product, ipaddress) VALUES ('".TIMENOW."', '".$vbulletin->db->escape_string($err_str)."', '', 'cleantalk', '".$vbulletin->db->escape_string(IPADDRESS)."')");
 
             if($bSendEmail){
                 $send_flag = FALSE;
@@ -202,35 +198,31 @@ class CleantalkAPI {
                 if(!$time || empty($time)){
                     $send_flag = TRUE;
                     $insert_flag = TRUE;
-                }elseif(time()-900 > $time['ct_value']) {       // 15 minutes
+                }elseif(time()-900 > $time['ct_value']) {		// 15 minutes
                     $send_flag = TRUE;
                     $insert_flag = FALSE;
                 }
                 if($send_flag){
                     if($insert_flag){
-            $vbulletin->db->query_write("
-                INSERT INTO " . TABLE_PREFIX . "cleantalk_timelabels
-                (ct_key, ct_value)
-                VALUES
-                ('$timelabels_key', " . time() . ")
-            ");
-                }else{
-            $vbulletin->db->query_write("
-                UPDATE " . TABLE_PREFIX . "cleantalk_timelabels
-                SET ct_key='$timelabels_key', ct_value=" . time()
-            );
-                }
+			$vbulletin->db->query_write("
+			    INSERT INTO " . TABLE_PREFIX . "cleantalk_timelabels
+				(ct_key, ct_value)
+			    VALUES
+				('$timelabels_key', " . time() . ")
+			");
+	            }else{
+			$vbulletin->db->query_write("
+			    UPDATE " . TABLE_PREFIX . "cleantalk_timelabels
+			    SET ct_key='$timelabels_key', ct_value=" . time()
+			);
+    		    }
 
-            $ct_admin_users = $vbulletin->db->query_read("SELECT * FROM " . TABLE_PREFIX . "user WHERE usergroupid=6");
-            while ($ct_admin_user = $vbulletin->db->fetch_array($ct_admin_users)) {
-            vbmail($ct_admin_user['email'],  $err_title, $err_str. "\nHost ".$_SERVER['SERVER_NAME']."\nTime ".date('Y-m-d H:i:s'));
-            }
+		    $ct_admin_users = $vbulletin->db->query_read("SELECT * FROM " . TABLE_PREFIX . "user WHERE usergroupid=6");
+		    while ($ct_admin_user = $vbulletin->db->fetch_array($ct_admin_users)) {
+			vbmail($ct_admin_user['email'],  $err_title, $err_str. "\nHost ".$_SERVER['SERVER_NAME']."\nTime ".date('Y-m-d H:i:s'));
+		    }
                 }
             }
-            $ret_val['errno'] = 0;
-            $ret_val['allow'] = 0;
-            $ret_val['ct_result_comment'] = $err_title;
-            $ret_val['stop_queue'] = 1;
             return $ret_val;
         }
 
