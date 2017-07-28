@@ -17,17 +17,17 @@ class CleantalkAPI {
         $vbulletin->session->vars['ct_check_key'] = $ct_check_value;
         if (!isset($_COOKIE['ct_checkjs']))
         $ct_template_addon_body = '
-<script type="text/javascript">
-document.cookie =
- "ct_checkjs='.$ct_check_value.'; expires=1; path=/"
-</script>
-';
-else $ct_template_addon_body = '';
-        return $ct_template_addon_body;
-    }
+		<script type="text/javascript">
+		document.cookie =
+		 "ct_checkjs='.$ct_check_value.'; expires=1; path=/"
+		</script>
+		';
+		return $ct_template_addon_body;
+	}
     else
         return '';
     }
+}
 
     /**
      * Universal method for checking comment or new user for spam
