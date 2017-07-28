@@ -135,7 +135,6 @@ class CleantalkResponse {
             $this->errstr = $obj->errstr;
 
 			$this->errstr = preg_replace("/.+(\*\*\*.+\*\*\*).+/", "$1", $this->errstr);
-            // � азбираем  ответ с клинтолка
             $this->stop_words = isset($obj->stop_words) ? utf8_decode($obj->stop_words) : null;
             $this->comment = isset($obj->comment) ? utf8_decode($obj->comment) : null;
             $this->blacklisted = (isset($obj->blacklisted)) ? $obj->blacklisted : null;
