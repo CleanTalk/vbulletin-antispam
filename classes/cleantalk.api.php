@@ -12,23 +12,16 @@ class CleantalkAPI {
     if($sType != 'register' && $sType != 'comment')
         return '';
     if ($vbulletin->options['cleantalk_register_onoff'] && $vbulletin->options['cleantalk_onoff']) {
-        if (!session_id()) session_start();
+	    if (!session_id()) session_start();
         $_SESSION['ct_submit_' . ($sType == 'register' ? 'register' : 'comment'). '_time'] = time();
         $ct_check_value = md5($vbulletin->options['cleantalk_key']);
         $_SESSION['ct_check_key'] = $ct_check_value;
         if (!isset($_COOKIE['ct_checkjs']))
-        $ct_template_addon_body = '
-<script type="text/javascript">
-document.cookie =
- "ct_checkjs='.$ct_check_value.'; expires=1; path=/"
-</script>
-';
-else $ct_template_addon_body = '';
-        return $ct_template_addon_body;
-    }
+			setcookie('ct_checkjs', $ct_check_value, time()+3600, '/');
+	}
     else
         return '';
-    }
+}
 
     /**
      * Universal method for checking comment or new user for spam
@@ -104,7 +97,7 @@ else $ct_template_addon_body = '';
         $ct_request->sender_email = isset($arEntity['sender_email']) ? $arEntity['sender_email'] : '';
         $ct_request->sender_nickname = isset($arEntity['sender_nickname']) ? $arEntity['sender_nickname'] : '';
         $ct_request->sender_ip = isset($arEntity['sender_ip']) ? $arEntity['sender_ip'] : $sender_ip;
-        $ct_request->agent = 'vbulletin-17';
+        $ct_request->agent = 'vbulletin-16';
         $ct_request->response_lang = $vbulletin->options['cleantalk_lang'];
         $ct_request->js_on = $checkjs;
         $ct_request->sender_info = $sender_info;
@@ -129,6 +122,21 @@ else $ct_template_addon_body = '';
                 // Additional info.
                 $post_info = '';
                 $a_post_info['comment_type'] = 'comment';
+
+                // JSON format.
+                $example = json_encode($a_example);
+                $post_info = json_encode($a_post_info);
+
+                // Plain text format.
+                if($example === FALSE){
+                    $example = '';
+                    $example .= $a_example['title'] . " \n\n";
+                    $example .= $a_example['body'] . " \n\n";
+                    $example .= $a_example['comments'];
+                }
+                if($post_info === FALSE)
+                    $post_info = '';
+
                 // Example text + last N comments in json or plain text format.
                 $ct_request->example = $example;
                 $ct_request->post_info = $post_info;
