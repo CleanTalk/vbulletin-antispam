@@ -32,17 +32,12 @@ while ($ct_phrase = $db->fetch_array($ct_phrases)) {
 
 $db->query_write("CREATE TABLE " . TABLE_PREFIX . "cleantalk_php_code (id varchar(255), php_code text, PRIMARY KEY (id))");
 
-$php_code = file_get_contents('https://raw.githubusercontent.com/CleanTalk/vbulletin-antispam/master/classes/JSON.php');
-if($php_code !== FALSE){
-    $db->query_write("INSERT INTO " . TABLE_PREFIX . "cleantalk_php_code (id, php_code) VALUES ('class_json', '" . $db->escape_string($php_code) . "')");
-}
-
-$php_code = file_get_contents('https://raw.githubusercontent.com/CleanTalk/vbulletin-antispam/master/classes/cleantalk.class.php');
+$php_code = file_get_contents('https://raw.githubusercontent.com/CleanTalk/vbulletin-antispam/dev/classes/cleantalk.class.php');
 if($php_code !== FALSE){
     $db->query_write("INSERT INTO " . TABLE_PREFIX . "cleantalk_php_code (id, php_code) VALUES ('class_base', '" . $db->escape_string($php_code) . "')");
 }
 
-$php_code = file_get_contents('https://raw.githubusercontent.com/CleanTalk/vbulletin-antispam/master/classes/cleantalk.api.php');
+$php_code = file_get_contents('https://raw.githubusercontent.com/CleanTalk/vbulletin-antispam/dev/classes/cleantalk.api.php');
 if($php_code !== FALSE){
     $db->query_write("INSERT INTO " . TABLE_PREFIX . "cleantalk_php_code (id, php_code) VALUES ('class_api', '" . $db->escape_string($php_code) . "')");
 }
@@ -72,30 +67,7 @@ while ($ct_phrase = $db->fetch_array($ct_phrases)) {
 		<plugin active="1" executionorder="1">
 			<title>Cleantalk: register_addmember_process</title>
 			<hookname>register_addmember_process</hookname>
-			<phpcode><![CDATA[if(!function_exists('json_encode') || !function_exists('json_decode')) {
-    if(!class_exists('Services_JSON(')){
-	$code_json = $vbulletin->db->query_first("SELECT php_code FROM " . TABLE_PREFIX . "cleantalk_php_code WHERE id='class_json' LIMIT 1");
-	if(is_array($code_json) && !empty($code_json['php_code'])){
-    	    eval($code_json['php_code']);
-	}
-    }
-    if(class_exists('Services_JSON(')){
-        if(!function_exists('json_encode')) {
-            function json_encode($data) {
-                $json = new Services_JSON();
-                return( $json->encode($data) );
-            }
-        }
-        if(!function_exists('json_decode')) {
-            function json_decode($data) {
-                $json = new Services_JSON();
-                return( $json->decode($data) );
-            }
-        }
-    }
-}
-
-if(!class_exists('CleantalkResponse') || !class_exists('CleantalkRequest') || !class_exists('Cleantalk')){
+			<phpcode><![CDATA[if(!class_exists('CleantalkResponse') || !class_exists('CleantalkRequest') || !class_exists('Cleantalk')){
     $code_base = $vbulletin->db->query_first("SELECT php_code FROM " . TABLE_PREFIX . "cleantalk_php_code WHERE id='class_base' LIMIT 1");
     if(is_array($code_base) && !empty($code_base['php_code'])){
         eval($code_base['php_code']);
@@ -110,8 +82,6 @@ if(!class_exists('CleantalkAPI')){
 }
 
 if(
-    function_exists('json_encode') &&
-    function_exists('json_decode') &&
     class_exists('CleantalkResponse') &&
     class_exists('CleantalkRequest') &&
     class_exists('Cleantalk') &&
@@ -279,30 +249,7 @@ if(!class_exists('CleantalkAPI')){
 		<plugin active="1" executionorder="1">
 			<title>Cleantalk: newpost_complete</title>
 			<hookname>newpost_complete</hookname>
-			<phpcode><![CDATA[if(!function_exists('json_encode') || !function_exists('json_decode')) {  
-    if(!class_exists('Services_JSON(')){  
-    $code_json = $vbulletin->db->query_first("SELECT php_code FROM " . TABLE_PREFIX . "cleantalk_php_code WHERE id='class_json' LIMIT 1");  
-    if(is_array($code_json) && !empty($code_json['php_code'])){  
-            eval($code_json['php_code']);  
-    }  
-    }  
-    if(class_exists('Services_JSON(')){  
-        if(!function_exists('json_encode')) {  
-            function json_encode($data) {  
-                $json = new Services_JSON();  
-                return( $json->encode($data) );  
-            }  
-        }  
-        if(!function_exists('json_decode')) {  
-            function json_decode($data) {  
-                $json = new Services_JSON();  
-                return( $json->decode($data) );  
-            }  
-        }  
-    }  
-}  
-
-if(!class_exists('CleantalkResponse') || !class_exists('CleantalkRequest') || !class_exists('Cleantalk')){  
+			<phpcode><![CDATA[if(!class_exists('CleantalkResponse') || !class_exists('CleantalkRequest') || !class_exists('Cleantalk')){  
     $code_base = $vbulletin->db->query_first("SELECT php_code FROM " . TABLE_PREFIX . "cleantalk_php_code WHERE id='class_base' LIMIT 1");  
     if(is_array($code_base) && !empty($code_base['php_code'])){  
         eval($code_base['php_code']);  
@@ -315,9 +262,7 @@ if(!class_exists('CleantalkAPI')){
         eval($code_api['php_code']);  
     }  
 } 
-if(  
-    function_exists('json_encode') &&  
-    function_exists('json_decode') &&  
+if(    
     class_exists('CleantalkResponse') &&  
     class_exists('CleantalkRequest') &&  
     class_exists('Cleantalk') &&  
