@@ -84,9 +84,6 @@ class CleantalkAPI {
         $ct->server_url = $ct_ws['server_url'];
         $ct->server_ttl = $ct_ws['server_ttl'];
         $ct->server_changed = $ct_ws['server_changed'];
-
-        //$ct->data_codepage = "windows-1251"; // uncomment when cp1251
-
     if (isset($_SERVER['HTTP_X_FORWARDED_FOR'])){
         $forwarded_for = (isset($_SERVER['HTTP_X_FORWARDED_FOR'])) ? htmlentities($_SERVER['HTTP_X_FORWARDED_FOR']) : '';
     }
