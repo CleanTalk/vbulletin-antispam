@@ -84,9 +84,6 @@ class CleantalkAPI {
         $ct->server_url = $ct_ws['server_url'];
         $ct->server_ttl = $ct_ws['server_ttl'];
         $ct->server_changed = $ct_ws['server_changed'];
-
-        //$ct->data_codepage = "windows-1251"; // uncomment when cp1251
-
     if (isset($_SERVER['HTTP_X_FORWARDED_FOR'])){
         $forwarded_for = (isset($_SERVER['HTTP_X_FORWARDED_FOR'])) ? htmlentities($_SERVER['HTTP_X_FORWARDED_FOR']) : '';
     }
@@ -97,7 +94,7 @@ class CleantalkAPI {
         $ct_request->sender_email = isset($arEntity['sender_email']) ? $arEntity['sender_email'] : '';
         $ct_request->sender_nickname = isset($arEntity['sender_nickname']) ? $arEntity['sender_nickname'] : '';
         $ct_request->sender_ip = isset($arEntity['sender_ip']) ? $arEntity['sender_ip'] : $sender_ip;
-        $ct_request->agent = 'vbulletin-18';
+        $ct_request->agent = 'vbulletin-19';
         $ct_request->response_lang = $vbulletin->options['cleantalk_lang'];
         $ct_request->js_on = $checkjs;
         $ct_request->sender_info = $sender_info;
