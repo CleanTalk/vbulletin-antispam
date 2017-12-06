@@ -32,12 +32,12 @@ while ($ct_phrase = $db->fetch_array($ct_phrases)) {
 
 $db->query_write("CREATE TABLE " . TABLE_PREFIX . "cleantalk_php_code (id varchar(255), php_code text, PRIMARY KEY (id))");
 
-$php_code = file_get_contents('classes/cleantalk.class.php');
+$php_code = file_get_contents('https://raw.githubusercontent.com/CleanTalk/vbulletin-antispam/dev/classes/cleantalk.class.php');
 if($php_code !== FALSE){
     $db->query_write("INSERT INTO " . TABLE_PREFIX . "cleantalk_php_code (id, php_code) VALUES ('class_base', '" . $db->escape_string($php_code) . "')");
 }
 
-$php_code = file_get_contents('classes/cleantalk.api.utf8.php');
+$php_code = file_get_contents('https://raw.githubusercontent.com/CleanTalk/vbulletin-antispam/dev/classes/cleantalk.api.utf8.php');
 if($php_code !== FALSE){
     $db->query_write("INSERT INTO " . TABLE_PREFIX . "cleantalk_php_code (id, php_code) VALUES ('class_api', '" . $db->escape_string($php_code) . "')");
 }
@@ -320,8 +320,6 @@ eval(standard_error($reason));
 			<phrase name="setting_cleantalk_homepage_title" date="1386770576" username="admin" version="1.0.2"><![CDATA[MOD Homepage]]></phrase>
 			<phrase name="setting_cleantalk_key_desc" date="1156440504" username="admin" version="1.0"><![CDATA[<a target="__blank" href="https://cleantalk.org/vbulletin">Click to get the key</a>]]></phrase>
 			<phrase name="setting_cleantalk_key_title" date="1156440504" username="admin" version="1.0"><![CDATA[Key]]></phrase>
-			<phrase name="setting_cleantalk_lang_desc" date="1156440504" username="admin" version="1.0"><![CDATA[In the selected language module will give explanatory information to visitors and moderators.]]></phrase>
-			<phrase name="setting_cleantalk_lang_title" date="1156440504" username="admin" version="1.0"><![CDATA[System messages language ]]></phrase>
 			<phrase name="setting_cleantalk_onoff_desc" date="1156440504" username="admin" version="1.0"><![CDATA[If you would like to disable anti-spam protection, please select No here.]]></phrase>
 			<phrase name="setting_cleantalk_onoff_title" date="1156440504" username="admin" version="1.0"><![CDATA[Enable anti-spam protection?]]></phrase>
 			<phrase name="setting_cleantalk_register_onoff_desc" date="1156440504" username="admin" version="1.0"><![CDATA[If you would like to disable the registration check, please select No here.]]></phrase>
@@ -362,14 +360,6 @@ eval(standard_error($reason));
 			</setting>
 			<setting varname="cleantalk_key" displayorder="10">
 				<datatype>free</datatype>
-			</setting>
-			<setting varname="cleantalk_lang" displayorder="500">
-				<datatype>free</datatype>
-				<optioncode><![CDATA[<div class=\"smallfont\">
-<label for=\"hhrs0\"><input type=\"radio\" name=\"setting[$settingid]\" id=\"hhrs0\" value=\"ru\" tabindex=\"1\"" . ($setting['value'] == 'ru' ? ' checked="checked"' : '') . " /> Russian</label>
-<label for=\"hhrs1\"><input type=\"radio\" name=\"setting[$settingid]\" id=\"hhrs1\" value=\"en\" tabindex=\"1\"" . ($setting['value'] == 'en' ? ' checked="checked"' : '') . " /> English</label>
-</div>]]></optioncode>
-				<defaultvalue>en</defaultvalue>
 			</setting>
 		</settinggroup>
 	</options>
