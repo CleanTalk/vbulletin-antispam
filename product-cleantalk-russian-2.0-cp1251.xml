@@ -1,16 +1,16 @@
 <?xml version="1.0" encoding="ISO-8859-1"?>
 
 <product productid="cleantalk" active="1">
-	<title>Anti-spam by CleanTalk</title>
-	<description>No Captcha, no questions, no counting animals, no puzzles, no math.</description>
-	<version>1.9</version>
+	<title>Àíòèñïàì îò CleanTalk</title>
+	<description>Àíòèñïàì áåç êàï÷è, âîïðîñîâ-îòâåòîâ, ïîäñ÷åòà æèâîòíûõ, ïàçëîâ è àðèôìåòè÷åñêèõ çàäà÷.</description>
+	<version>2.0</version>
 	<url>https://cleantalk.org/vbulletin</url>
 	<versioncheckurl />
 	<dependencies>
 		<dependency dependencytype="vbulletin" minversion="3.8.0" maxversion="4.2.9" />
 	</dependencies>
 	<codes>
-		<code version="1.9">
+		<code version="2.0">
 			<installcode><![CDATA[$db->show_errors();
 
 $db->query_write("DROP TABLE IF EXISTS  " . TABLE_PREFIX . "ct_config");
@@ -25,19 +25,19 @@ $ct_phrases = $db->query_read("SELECT * FROM " . TABLE_PREFIX . "phrase WHERE va
 
 while ($ct_phrase = $db->fetch_array($ct_phrases)) {
     if ($ct_phrase[languageid] == '-1') {
-	$ct_text = $ct_phrase[text].'<p>In order to protect the forum from spam your Email, Nickname, IP address, and the message can be sent to the servers anti-spam service <a href="http://cleantalk.org">CleanTalk</a>.</p>';
+	$ct_text = $ct_phrase[text].'<p>Â öåëÿõ çàùèòû ôîðóìà îò ñïàìà, âàø àäðåñ ýëåêòðîííîé ïî÷òû, íèê, IP-àäðåñ è ñîîáùåíèå ìîæåò áûòü îòïðàâëåíî íà ñåðâåðà àíòè-ñïàì ñåðâèñà <a href="http://cleantalk.org">CleanTalk</a>.</p>';
 	$db->query_write("UPDATE " . TABLE_PREFIX . "phrase SET `text` = '".$db->escape_string($ct_text)."' WHERE phraseid='".$ct_phrase[phraseid]."'");
     }
 }
 
 $db->query_write("CREATE TABLE " . TABLE_PREFIX . "cleantalk_php_code (id varchar(255), php_code text, PRIMARY KEY (id))");
 
-$php_code = file_get_contents('https://raw.githubusercontent.com/CleanTalk/vbulletin-antispam/master/classes/cleantalk.class.php');
+$php_code = file_get_contents('https://raw.githubusercontent.com/CleanTalk/vbulletin-antispam/dev/classes/cleantalk.class.php');
 if($php_code !== FALSE){
     $db->query_write("INSERT INTO " . TABLE_PREFIX . "cleantalk_php_code (id, php_code) VALUES ('class_base', '" . $db->escape_string($php_code) . "')");
 }
 
-$php_code = file_get_contents('https://raw.githubusercontent.com/CleanTalk/vbulletin-antispam/master/classes/cleantalk.api.php');
+$php_code = file_get_contents('https://raw.githubusercontent.com/CleanTalk/vbulletin-antispam/dev/classes/cleantalk.api.cp1251.php');
 if($php_code !== FALSE){
     $db->query_write("INSERT INTO " . TABLE_PREFIX . "cleantalk_php_code (id, php_code) VALUES ('class_api', '" . $db->escape_string($php_code) . "')");
 }
@@ -51,7 +51,7 @@ $ct_phrases = $db->query_read("SELECT l.languagecode, p.* FROM " . TABLE_PREFIX 
 
 while ($ct_phrase = $db->fetch_array($ct_phrases)) {
     if ($ct_phrase[languagecode] == 'ru') {
-	$ct_text = str_replace('<p>In order to protect the forum from spam your Email, Nickname, IP address, and the message can be sent to the servers anti-spam service <a href="http://cleantalk.org">CleanTalk</a>.</p>', '', $ct_phrase[text]);
+	$ct_text = str_replace('<p>Â öåëÿõ çàùèòû ôîðóìà îò ñïàìà, âàø àäðåñ ýëåêòðîííîé ïî÷òû, íèê, IP-àäðåñ è ñîîáùåíèå ìîæåò áûòü îòïðàâëåíî íà ñåðâåðà àíòè-ñïàì ñåðâèñà <a href="http://cleantalk.org">CleanTalk</a>.</p>', '', $ct_phrase[text]);
 	$db->query_write("UPDATE " . TABLE_PREFIX . "phrase SET `text` = '".$db->escape_string($ct_text)."' WHERE phraseid='".$ct_phrase[phraseid]."'");
     }
 }]]></uninstallcode>
@@ -313,25 +313,24 @@ eval(standard_error($reason));
 	</plugins>
 	<phrases>
 		<phrasetype name="Error Messages" fieldname="error">
-			<phrase name="cleantalk_wrong" date="1165886086" username="admin" version="1.1"><![CDATA[Cleantalk wrong access]]></phrase>
+			<phrase name="cleantalk_wrong" date="1165886086" username="admin" version="1.1"><![CDATA[Cleantalk îøèáêà äîñòóïà]]></phrase>
 		</phrasetype>
 		<phrasetype name="vBulletin Settings" fieldname="vbsettings">
-			<phrase name="setting_cleantalk_homepage_desc" date="1386770576" username="admin" version="1.0.2"><![CDATA[Feel free to contact us to ask any question]]></phrase>
-			<phrase name="setting_cleantalk_homepage_title" date="1386770576" username="admin" version="1.0.2"><![CDATA[MOD Homepage]]></phrase>
-			<phrase name="setting_cleantalk_key_desc" date="1156440504" username="admin" version="1.0"><![CDATA[<a target="__blank" href="https://cleantalk.org/vbulletin">Click to get the key</a>]]></phrase>
-			<phrase name="setting_cleantalk_key_title" date="1156440504" username="admin" version="1.0"><![CDATA[Key]]></phrase>
-			<phrase name="setting_cleantalk_lang_desc" date="1156440504" username="admin" version="1.0"><![CDATA[In the selected language module will give explanatory information to visitors and moderators.]]></phrase>
-			<phrase name="setting_cleantalk_lang_title" date="1156440504" username="admin" version="1.0"><![CDATA[System messages language ]]></phrase>
-			<phrase name="setting_cleantalk_onoff_desc" date="1156440504" username="admin" version="1.0"><![CDATA[If you would like to disable anti-spam protection, please select No here.]]></phrase>
-			<phrase name="setting_cleantalk_onoff_title" date="1156440504" username="admin" version="1.0"><![CDATA[Enable anti-spam protection?]]></phrase>
-			<phrase name="setting_cleantalk_register_onoff_desc" date="1156440504" username="admin" version="1.0"><![CDATA[If you would like to disable the registration check, please select No here.]]></phrase>
-			<phrase name="setting_cleantalk_log_onoff_desc" date="1156440504" username="admin" version="1.2"><![CDATA[If you would like to disable logging, please select No here.]]></phrase>
-			<phrase name="setting_cleantalk_log_onoff_title" date="1156440504" username="admin" version="1.2"><![CDATA[Enable logging?]]></phrase>
-			<phrase name="setting_cleantalk_link_onoff_desc" date="1156440504" username="admin" version="1.2"><![CDATA[Enabling this option places a small link in the footer of your site that lets others know what anti-spam tool protects your site.]]></phrase>
-			<phrase name="setting_cleantalk_link_onoff_title" date="1156440504" username="admin" version="1.2"><![CDATA[Tell others about CleanTalk?]]></phrase>
+			<phrase name="setting_cleantalk_homepage_desc" date="1386770576" username="admin" version="1.0.2"><![CDATA[Ìû îòâåòèì íà âñå Âàøè âîïðîñû]]></phrase>
+			<phrase name="setting_cleantalk_homepage_title" date="1386770576" username="admin" version="1.0.2"><![CDATA[Äîìàøíÿÿ ñòðàíèöà]]></phrase>
+			<phrase name="setting_cleantalk_key_desc" date="1156440504" username="admin" version="1.0"><![CDATA[<a target="__blank" href="https://cleantalk.org/vbulletin">Êëèêíèòå, ÷òîáû ïîëó÷èòü êëþ÷</a>]]></phrase>
+			<phrase name="setting_cleantalk_key_title" date="1156440504" username="admin" version="1.0"><![CDATA[Êëþ÷ äîñòóïà]]></phrase>
+			<phrase name="setting_cleantalk_onoff_desc" date="1156440504" username="admin" version="1.0"><![CDATA[Åñëè Âû æåëàåòå îòêëþ÷èòü àíòèñïàì çàùèòó, òî âûáåðèòå Íåò.]]></phrase>
+			<phrase name="setting_cleantalk_onoff_title" date="1156440504" username="admin" version="1.0"><![CDATA[Âêëþ÷èòü àíòèñïàì çàùèòó?]]></phrase>
+			<phrase name="setting_cleantalk_register_onoff_desc" date="1156440504" username="admin" version="1.0"><![CDATA[Åñëè Âû æåëàåòå îòêëþ÷èòü ïðîâåðêó ðåãèñòðàöèé, òî âûáåðèòå Íåò.]]></phrase>
+			<phrase name="setting_cleantalk_register_onoff_title" date="1156440504" username="admin" version="1.0"><![CDATA[Âêëþ÷èòü ïðîâåðêó ðåãèñòðàöèé?]]></phrase>
+			<phrase name="setting_cleantalk_log_onoff_desc" date="1156440504" username="admin" version="1.2"><![CDATA[Åñëè Âû æåëàåòå îòêëþ÷èòü çàïèñü ëîãà ïðîâåðîê, òî âûáåðèòå Íåò.]]></phrase>
+			<phrase name="setting_cleantalk_log_onoff_title" date="1156440504" username="admin" version="1.2"><![CDATA[Âêëþ÷èòü âåäåíèå ëîãà ïðîâåðîê?]]></phrase>
+			<phrase name="setting_cleantalk_link_onoff_desc" date="1156440504" username="admin" version="1.2"><![CDATA[Âêëþ÷åíèå ýòîé îïöèè ðàçìåñòèò âíèçó êàæäîé ñòðàíèöû Âàøåãî ñàéòà íåáîëüøóþ ññûëêó íà íàø ñàéò. Ýòî ïîçâîëèò Âàì ðàññêàçàòü Âàøèì ïîñåòèòåëÿì, ÷òî âû èñïîëüçóåòå CleanTalk äëÿ çàùèòû ñàéòà.]]></phrase>
+			<phrase name="setting_cleantalk_link_onoff_title" date="1156440504" username="admin" version="1.2"><![CDATA[Ðàññêàçàòü âñåì ïðî CleanTalk?]]></phrase>
 
-			<phrase name="setting_cleantalk_register_onoff_title" date="1156440504" username="admin" version="1.0"><![CDATA[Enable registration check?]]></phrase>
-			<phrase name="settinggroup_cleantalk" date="1156439888" username="admin" version="1.0"><![CDATA[Anti-spam by CleanTalk]]></phrase>
+			
+			<phrase name="settinggroup_cleantalk" date="1156439888" username="admin" version="1.0"><![CDATA[Àíòèñïàì îò CleanTalk]]></phrase>
 		</phrasetype>
 	</phrases>
 	<options>
@@ -362,14 +361,6 @@ eval(standard_error($reason));
 			</setting>
 			<setting varname="cleantalk_key" displayorder="10">
 				<datatype>free</datatype>
-			</setting>
-			<setting varname="cleantalk_lang" displayorder="500">
-				<datatype>free</datatype>
-				<optioncode><![CDATA[<div class=\"smallfont\">
-<label for=\"hhrs0\"><input type=\"radio\" name=\"setting[$settingid]\" id=\"hhrs0\" value=\"ru\" tabindex=\"1\"" . ($setting['value'] == 'ru' ? ' checked="checked"' : '') . " /> Russian</label>
-<label for=\"hhrs1\"><input type=\"radio\" name=\"setting[$settingid]\" id=\"hhrs1\" value=\"en\" tabindex=\"1\"" . ($setting['value'] == 'en' ? ' checked="checked"' : '') . " /> English</label>
-</div>]]></optioncode>
-				<defaultvalue>en</defaultvalue>
 			</setting>
 		</settinggroup>
 	</options>
