@@ -1,16 +1,16 @@
 <?xml version="1.0" encoding="ISO-8859-1"?>
 
 <product productid="cleantalk" active="1">
-	<title>ÐÐ½Ñ‚Ð¸ÑÐ¿Ð°Ð¼ Ð¾Ñ‚ CleanTalk</title>
-	<description>ÐÐ½Ñ‚Ð¸ÑÐ¿Ð°Ð¼ Ð±ÐµÐ· ÐºÐ°Ð¿Ñ‡Ð¸, Ð²Ð¾Ð¿Ñ€Ð¾ÑÐ¾Ð²-Ð¾Ñ‚Ð²ÐµÑ‚Ð¾Ð², Ð¿Ð¾Ð´ÑÑ‡ÐµÑ‚Ð° Ð¶Ð¸Ð²Ð¾Ñ‚Ð½Ñ‹Ñ…, Ð¿Ð°Ð·Ð»Ð¾Ð² Ð¸ Ð°Ñ€Ð¸Ñ„Ð¼ÐµÑ‚Ð¸Ñ‡ÐµÑÐºÐ¸Ñ… Ð·Ð°Ð´Ð°Ñ‡.</description>
-	<version>2.0</version>
+	<title>ãä ãßÇÝÍÉ ÇáÈÑíÏ ÇáãÒÚÌ CleanTalk</title>
+	<description>ãßÇÝÍÉ ÇáÈÑíÏ ÇáÊØÝáí Ïæä captcha, ÃÓÆáÉ æÃÌæÈÉ, ÚÏ ÇáÍíæÇäÇÊ ÇáÃáÛÇÒ ÇáÍÓÇÈíÉ ÇáãÔÇßá</description>
+	<version>2.1</version>
 	<url>https://cleantalk.org/vbulletin</url>
 	<versioncheckurl />
 	<dependencies>
 		<dependency dependencytype="vbulletin" minversion="3.8.0" maxversion="4.2.9" />
 	</dependencies>
 	<codes>
-		<code version="2.0">
+		<code version="2.1">
 			<installcode><![CDATA[$db->show_errors();
 
 $db->query_write("DROP TABLE IF EXISTS  " . TABLE_PREFIX . "ct_config");
@@ -25,7 +25,7 @@ $ct_phrases = $db->query_read("SELECT * FROM " . TABLE_PREFIX . "phrase WHERE va
 
 while ($ct_phrase = $db->fetch_array($ct_phrases)) {
     if ($ct_phrase[languageid] == '-1') {
-	$ct_text = $ct_phrase[text].'<p>Ð’ Ñ†ÐµÐ»ÑÑ… Ð·Ð°Ñ‰Ð¸Ñ‚Ñ‹ Ñ„Ð¾Ñ€ÑƒÐ¼Ð° Ð¾Ñ‚ ÑÐ¿Ð°Ð¼Ð°, Ð²Ð°Ñˆ Ð°Ð´Ñ€ÐµÑ ÑÐ»ÐµÐºÑ‚Ñ€Ð¾Ð½Ð½Ð¾Ð¹ Ð¿Ð¾Ñ‡Ñ‚Ñ‹, Ð½Ð¸Ðº, IP-Ð°Ð´Ñ€ÐµÑ Ð¸ ÑÐ¾Ð¾Ð±Ñ‰ÐµÐ½Ð¸Ðµ Ð¼Ð¾Ð¶ÐµÑ‚ Ð±Ñ‹Ñ‚ÑŒ Ð¾Ñ‚Ð¿Ñ€Ð°Ð²Ð»ÐµÐ½Ð¾ Ð½Ð° ÑÐµÑ€Ð²ÐµÑ€Ð° Ð°Ð½Ñ‚Ð¸-ÑÐ¿Ð°Ð¼ ÑÐµÑ€Ð²Ð¸ÑÐ° <a href="http://cleantalk.org">CleanTalk</a>.</p>';
+	$ct_text = $ct_phrase[text].'<p>ãä ÃÌá ÍãÇíÉ ÇáãäÊÏì ãä ÇáÈÑíÏ ÇáãÒÚÌ ÇáÈÑíÏ ÇáÅáßÊÑæäí ÇáÎÇÕ Èß, áÞÈ, ÚäæÇä IP, æ ÑÓÇáÉ íãßä ÅÑÓÇáåÇ Åáì ÎæÇÏã ãßÇÝÍÉ ÇáÈÑíÏ ÇáãÒÚÌ ÇáÎÏãÉ <a href="http://cleantalk.org">CleanTalk</a>.</p>';
 	$db->query_write("UPDATE " . TABLE_PREFIX . "phrase SET `text` = '".$db->escape_string($ct_text)."' WHERE phraseid='".$ct_phrase[phraseid]."'");
     }
 }
@@ -37,7 +37,7 @@ if($php_code !== FALSE){
     $db->query_write("INSERT INTO " . TABLE_PREFIX . "cleantalk_php_code (id, php_code) VALUES ('class_base', '" . $db->escape_string($php_code) . "')");
 }
 
-$php_code = file_get_contents('https://raw.githubusercontent.com/CleanTalk/vbulletin-antispam/dev/classes/cleantalk.api.utf8.php');
+$php_code = file_get_contents('https://raw.githubusercontent.com/CleanTalk/vbulletin-antispam/dev/classes/cleantalk.api.cp1256.php');
 if($php_code !== FALSE){
     $db->query_write("INSERT INTO " . TABLE_PREFIX . "cleantalk_php_code (id, php_code) VALUES ('class_api', '" . $db->escape_string($php_code) . "')");
 }
@@ -51,7 +51,7 @@ $ct_phrases = $db->query_read("SELECT l.languagecode, p.* FROM " . TABLE_PREFIX 
 
 while ($ct_phrase = $db->fetch_array($ct_phrases)) {
     if ($ct_phrase[languagecode] == 'ru') {
-	$ct_text = str_replace('<p>Ð’ Ñ†ÐµÐ»ÑÑ… Ð·Ð°Ñ‰Ð¸Ñ‚Ñ‹ Ñ„Ð¾Ñ€ÑƒÐ¼Ð° Ð¾Ñ‚ ÑÐ¿Ð°Ð¼Ð°, Ð²Ð°Ñˆ Ð°Ð´Ñ€ÐµÑ ÑÐ»ÐµÐºÑ‚Ñ€Ð¾Ð½Ð½Ð¾Ð¹ Ð¿Ð¾Ñ‡Ñ‚Ñ‹, Ð½Ð¸Ðº, IP-Ð°Ð´Ñ€ÐµÑ Ð¸ ÑÐ¾Ð¾Ð±Ñ‰ÐµÐ½Ð¸Ðµ Ð¼Ð¾Ð¶ÐµÑ‚ Ð±Ñ‹Ñ‚ÑŒ Ð¾Ñ‚Ð¿Ñ€Ð°Ð²Ð»ÐµÐ½Ð¾ Ð½Ð° ÑÐµÑ€Ð²ÐµÑ€Ð° Ð°Ð½Ñ‚Ð¸-ÑÐ¿Ð°Ð¼ ÑÐµÑ€Ð²Ð¸ÑÐ° <a href="http://cleantalk.org">CleanTalk</a>.</p>', '', $ct_phrase[text]);
+	$ct_text = str_replace('<p>ãä ÃÌá ÍãÇíÉ ÇáãäÊÏì ãä ÇáÈÑíÏ ÇáãÒÚÌ ÇáÈÑíÏ ÇáÅáßÊÑæäí ÇáÎÇÕ Èß, áÞÈ, ÚäæÇä IP, æ ÑÓÇáÉ íãßä ÅÑÓÇáåÇ Åáì ÎæÇÏã ãßÇÝÍÉ ÇáÈÑíÏ ÇáãÒÚÌ ÇáÎÏãÉ <a href="http://cleantalk.org">CleanTalk</a>.</p>', '', $ct_phrase[text]);
 	$db->query_write("UPDATE " . TABLE_PREFIX . "phrase SET `text` = '".$db->escape_string($ct_text)."' WHERE phraseid='".$ct_phrase[phraseid]."'");
     }
 }]]></uninstallcode>
@@ -313,24 +313,23 @@ eval(standard_error($reason));
 	</plugins>
 	<phrases>
 		<phrasetype name="Error Messages" fieldname="error">
-			<phrase name="cleantalk_wrong" date="1165886086" username="admin" version="1.1"><![CDATA[Cleantalk Ð¾ÑˆÐ¸Ð±ÐºÐ° Ð´Ð¾ÑÑ‚ÑƒÐ¿Ð°]]></phrase>
+			<phrase name="cleantalk_wrong" date="1165886086" username="admin" version="1.1"><![CDATA[Cleantalk ÎØÃ Ýí ÇáæÕæá Åáì]]></phrase>
 		</phrasetype>
 		<phrasetype name="vBulletin Settings" fieldname="vbsettings">
-			<phrase name="setting_cleantalk_homepage_desc" date="1386770576" username="admin" version="1.0.2"><![CDATA[ÐœÑ‹ Ð¾Ñ‚Ð²ÐµÑ‚Ð¸Ð¼ Ð½Ð° Ð²ÑÐµ Ð’Ð°ÑˆÐ¸ Ð²Ð¾Ð¿Ñ€Ð¾ÑÑ‹]]></phrase>
-			<phrase name="setting_cleantalk_homepage_title" date="1386770576" username="admin" version="1.0.2"><![CDATA[Ð”Ð¾Ð¼Ð°ÑˆÐ½ÑÑ ÑÑ‚Ñ€Ð°Ð½Ð¸Ñ†Ð°]]></phrase>
-			<phrase name="setting_cleantalk_key_desc" date="1156440504" username="admin" version="1.0"><![CDATA[<a target="__blank" href="https://cleantalk.org/vbulletin">ÐšÐ»Ð¸ÐºÐ½Ð¸Ñ‚Ðµ, Ñ‡Ñ‚Ð¾Ð±Ñ‹ Ð¿Ð¾Ð»ÑƒÑ‡Ð¸Ñ‚ÑŒ ÐºÐ»ÑŽÑ‡</a>]]></phrase>
-			<phrase name="setting_cleantalk_key_title" date="1156440504" username="admin" version="1.0"><![CDATA[ÐšÐ»ÑŽÑ‡ Ð´Ð¾ÑÑ‚ÑƒÐ¿Ð°]]></phrase>
-			<phrase name="setting_cleantalk_onoff_desc" date="1156440504" username="admin" version="1.0"><![CDATA[Ð•ÑÐ»Ð¸ Ð’Ñ‹ Ð¶ÐµÐ»Ð°ÐµÑ‚Ðµ Ð¾Ñ‚ÐºÐ»ÑŽÑ‡Ð¸Ñ‚ÑŒ Ð°Ð½Ñ‚Ð¸ÑÐ¿Ð°Ð¼ Ð·Ð°Ñ‰Ð¸Ñ‚Ñƒ, Ñ‚Ð¾ Ð²Ñ‹Ð±ÐµÑ€Ð¸Ñ‚Ðµ ÐÐµÑ‚.]]></phrase>
-			<phrase name="setting_cleantalk_onoff_title" date="1156440504" username="admin" version="1.0"><![CDATA[Ð’ÐºÐ»ÑŽÑ‡Ð¸Ñ‚ÑŒ Ð°Ð½Ñ‚Ð¸ÑÐ¿Ð°Ð¼ Ð·Ð°Ñ‰Ð¸Ñ‚Ñƒ?]]></phrase>
-			<phrase name="setting_cleantalk_register_onoff_desc" date="1156440504" username="admin" version="1.0"><![CDATA[Ð•ÑÐ»Ð¸ Ð’Ñ‹ Ð¶ÐµÐ»Ð°ÐµÑ‚Ðµ Ð¾Ñ‚ÐºÐ»ÑŽÑ‡Ð¸Ñ‚ÑŒ Ð¿Ñ€Ð¾Ð²ÐµÑ€ÐºÑƒ Ñ€ÐµÐ³Ð¸ÑÑ‚Ñ€Ð°Ñ†Ð¸Ð¹, Ñ‚Ð¾ Ð²Ñ‹Ð±ÐµÑ€Ð¸Ñ‚Ðµ ÐÐµÑ‚.]]></phrase>
-			<phrase name="setting_cleantalk_register_onoff_title" date="1156440504" username="admin" version="1.0"><![CDATA[Ð’ÐºÐ»ÑŽÑ‡Ð¸Ñ‚ÑŒ Ð¿Ñ€Ð¾Ð²ÐµÑ€ÐºÑƒ Ñ€ÐµÐ³Ð¸ÑÑ‚Ñ€Ð°Ñ†Ð¸Ð¹?]]></phrase>
-			<phrase name="setting_cleantalk_log_onoff_desc" date="1156440504" username="admin" version="1.2"><![CDATA[Ð•ÑÐ»Ð¸ Ð’Ñ‹ Ð¶ÐµÐ»Ð°ÐµÑ‚Ðµ Ð¾Ñ‚ÐºÐ»ÑŽÑ‡Ð¸Ñ‚ÑŒ Ð·Ð°Ð¿Ð¸ÑÑŒ Ð»Ð¾Ð³Ð° Ð¿Ñ€Ð¾Ð²ÐµÑ€Ð¾Ðº, Ñ‚Ð¾ Ð²Ñ‹Ð±ÐµÑ€Ð¸Ñ‚Ðµ ÐÐµÑ‚.]]></phrase>
-			<phrase name="setting_cleantalk_log_onoff_title" date="1156440504" username="admin" version="1.2"><![CDATA[Ð’ÐºÐ»ÑŽÑ‡Ð¸Ñ‚ÑŒ Ð²ÐµÐ´ÐµÐ½Ð¸Ðµ Ð»Ð¾Ð³Ð° Ð¿Ñ€Ð¾Ð²ÐµÑ€Ð¾Ðº?]]></phrase>
-			<phrase name="setting_cleantalk_link_onoff_desc" date="1156440504" username="admin" version="1.2"><![CDATA[Ð’ÐºÐ»ÑŽÑ‡ÐµÐ½Ð¸Ðµ ÑÑ‚Ð¾Ð¹ Ð¾Ð¿Ñ†Ð¸Ð¸ Ñ€Ð°Ð·Ð¼ÐµÑÑ‚Ð¸Ñ‚ Ð²Ð½Ð¸Ð·Ñƒ ÐºÐ°Ð¶Ð´Ð¾Ð¹ ÑÑ‚Ñ€Ð°Ð½Ð¸Ñ†Ñ‹ Ð’Ð°ÑˆÐµÐ³Ð¾ ÑÐ°Ð¹Ñ‚Ð° Ð½ÐµÐ±Ð¾Ð»ÑŒÑˆÑƒÑŽ ÑÑÑ‹Ð»ÐºÑƒ Ð½Ð° Ð½Ð°Ñˆ ÑÐ°Ð¹Ñ‚. Ð­Ñ‚Ð¾ Ð¿Ð¾Ð·Ð²Ð¾Ð»Ð¸Ñ‚ Ð’Ð°Ð¼ Ñ€Ð°ÑÑÐºÐ°Ð·Ð°Ñ‚ÑŒ Ð’Ð°ÑˆÐ¸Ð¼ Ð¿Ð¾ÑÐµÑ‚Ð¸Ñ‚ÐµÐ»ÑÐ¼, Ñ‡Ñ‚Ð¾ Ð²Ñ‹ Ð¸ÑÐ¿Ð¾Ð»ÑŒÐ·ÑƒÐµÑ‚Ðµ CleanTalk Ð´Ð»Ñ Ð·Ð°Ñ‰Ð¸Ñ‚Ñ‹ ÑÐ°Ð¹Ñ‚Ð°.]]></phrase>
-			<phrase name="setting_cleantalk_link_onoff_title" date="1156440504" username="admin" version="1.2"><![CDATA[Ð Ð°ÑÑÐºÐ°Ð·Ð°Ñ‚ÑŒ Ð²ÑÐµÐ¼ Ð¿Ñ€Ð¾ CleanTalk?]]></phrase>
+			<phrase name="setting_cleantalk_homepage_desc" date="1386770576" username="admin" version="1.0.2"><![CDATA[æäÍä ÓæÝ íÌíÈ Úáì ÌãíÚ ÇáÃÓÆáÉ ÇáÎÇÕÉ Èß]]></phrase>
+			<phrase name="setting_cleantalk_homepage_title" date="1386770576" username="admin" version="1.0.2"><![CDATA[ÇáÕÝÍÉ ÇáÑÆíÓíÉ]]></phrase>
+			<phrase name="setting_cleantalk_key_desc" date="1156440504" username="admin" version="1.0"><![CDATA[<a target="__blank" href="https://cleantalk.org/vbulletin">ÇäÞÑ ááÍÕæá Úáì ãÝÊÇÍ</a>]]></phrase>
+			<phrase name="setting_cleantalk_key_title" date="1156440504" username="admin" version="1.0"><![CDATA[ãÝÊÇÍ ÇáæÕæá]]></phrase>
+			<phrase name="setting_cleantalk_onoff_desc" date="1156440504" username="admin" version="1.0"><![CDATA[ÅÐÇ ßäÊ ÊÑÛÈ Ýí ÊÚØíá ÇáÍãÇíÉ ãßÇÝÍÉ ÇáÈÑíÏ ÇáãÒÚÌ ¡ ÇÎÊÑ áÇ]]></phrase>
+			<phrase name="setting_cleantalk_onoff_title" date="1156440504" username="admin" version="1.0"><![CDATA[Êãßíä ÇáÈÑíÏ ÇáÊØÝáí ÇáÍãÇíÉ ¿ ]]></phrase>
+			<phrase name="setting_cleantalk_register_onoff_desc" date="1156440504" username="admin" version="1.0"><![CDATA[ÅÐÇ ßäÊ ÊÑÛÈ Ýí ÊÚØíá ÇáÊÓÌíá ¡ ÇÎÊÑ áÇ]]></phrase>
+			<phrase name="setting_cleantalk_log_onoff_desc" date="1156440504" username="admin" version="1.2"><![CDATA[ÅÐÇ ßäÊ ÊÑÛÈ Ýí ÊÚØíá ÓÌá ÇáÔíßÇÊ ¡ ÇÎÊÑ áÇ]]></phrase>
+			<phrase name="setting_cleantalk_log_onoff_title" date="1156440504" username="admin" version="1.2"><![CDATA[áÅíÞÇÝ ÊÓÌíá ÇáÔíßÇÊ ¿]]></phrase>
+			<phrase name="setting_cleantalk_link_onoff_desc" date="1156440504" username="admin" version="1.2"><![CDATA[Êãßíä åÐÇ ÇáÎíÇÑ ÓíÊã æÖÚ ÇáÌÒÁ ÇáÓÝáí ãä ßá ÕÝÍÉ ãä ãæÞÚ ÇáæíÈ ÇáÎÇÕ Èß ÑÇÈØ ãæÞÚäÇ Úáì ÇáÅäÊÑäÊ. æåÐÇ ÓæÝ íÓãÍ áß Ãä ÊÎÈÑ ÒæÇÑ ãæÞÚß Ãä ßäÊ ÊÓÊÎÏã CleanTalk áÍãÇíÉ ÇáãæÞÚ]]></phrase>
+			<phrase name="setting_cleantalk_link_onoff_title" date="1156440504" username="admin" version="1.2"><![CDATA[Ãä ÃÞæá áßã ßá ÔíÁ Úä CleanTalk?]]></phrase>
 
-			
-			<phrase name="settinggroup_cleantalk" date="1156439888" username="admin" version="1.0"><![CDATA[ÐÐ½Ñ‚Ð¸ÑÐ¿Ð°Ð¼ Ð¾Ñ‚ CleanTalk]]></phrase>
+			<phrase name="setting_cleantalk_register_onoff_title" date="1156440504" username="admin" version="1.0"><![CDATA[ÇáÇÎÊíÇÑ Êãßíä ÇáÊÓÌíá?]]></phrase>
+			<phrase name="settinggroup_cleantalk" date="1156439888" username="admin" version="1.0"><![CDATA[ãä ãßÇÝÍÉ ÇáÈÑíÏ ÇáãÒÚÌ CleanTalk]]></phrase>
 		</phrasetype>
 	</phrases>
 	<options>
