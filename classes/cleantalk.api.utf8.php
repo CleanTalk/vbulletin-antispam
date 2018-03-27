@@ -207,7 +207,7 @@ class CleantalkAPI {
                 }else{
             $vbulletin->db->query_write("
                 UPDATE " . TABLE_PREFIX . "cleantalk_timelabels
-                SET ct_key='$timelabels_key', ct_value=" . time()
+                SET ct_value=" . time() WHERE ct_key='$timelabels_key'
             );
                 }
 
