@@ -7,21 +7,56 @@ class CleantalkAPI {
      * @param string Type of form - 'register' or 'comment' only
      * @return string Template addon text
      */
-    static function FormAddon($sType) {
+  static function FormAddon($sType) {
     global $vbulletin;
     if($sType != 'register' && $sType != 'comment')
         return '';
     if ($vbulletin->options['cleantalk_register_onoff'] && $vbulletin->options['cleantalk_onoff']) {
-	    if (!session_id()) session_start();
-        $_SESSION['ct_submit_' . ($sType == 'register' ? 'register' : 'comment'). '_time'] = time();
+        self::CookieTest();
+        if (!session_id()) session_start();
         $ct_check_value = md5($vbulletin->options['cleantalk_key']);
         $_SESSION['ct_check_key'] = $ct_check_value;
         if (!isset($_COOKIE['ct_checkjs']))
-			setcookie('ct_checkjs', $ct_check_value, time()+3600, '/');
-	}
+            setcookie('ct_checkjs', $ct_check_value, time()+3600, '/');
+    }
     else
         return '';
 }
+    static function CookieTest()
+    {
+        // Cookie names to validate
+        $cookie_test_value = array(
+            'cookies_names' => array(),
+            'check_value' => $vbulletin->options['cleantalk_key'],
+        );
+            
+        // Submit time
+        $apbct_timestamp = time();
+        setcookie('apbct_timestamp', $apbct_timestamp, 0, '/');
+        $cookie_test_value['cookies_names'][] = 'apbct_timestamp';
+        $cookie_test_value['check_value'] .= $apbct_timestamp;
+
+        // Pervious referer
+        if(!empty($_SERVER['HTTP_REFERER'])){
+            setcookie('apbct_prev_referer', $_SERVER['HTTP_REFERER'], 0, '/');
+            $cookie_test_value['cookies_names'][] = 'apbct_prev_referer';
+            $cookie_test_value['check_value'] .= $_SERVER['HTTP_REFERER'];
+        }
+        
+        // Landing time
+        if(isset($_COOKIE['apbct_site_landing_ts'])){
+            $site_landing_timestamp = $_COOKIE['apbct_site_landing_ts'];
+        }else{
+            $site_landing_timestamp = time();
+            setcookie('apbct_site_landing_ts', $site_landing_timestamp, 0, '/');
+        }
+        $cookie_test_value['cookies_names'][] = 'apbct_site_landing_ts';
+        $cookie_test_value['check_value'] .= $site_landing_timestamp;
+        
+        // Cookies test
+        $cookie_test_value['check_value'] = md5($cookie_test_value['check_value']);
+        setcookie('apbct_cookies_test', json_encode($cookie_test_value), 0, '/');
+    }
 
     /**
      * Universal method for checking comment or new user for spam
@@ -75,7 +110,8 @@ class CleantalkAPI {
             'cms_lang' => $ct_language,
             'REFFERRER' => $refferrer,
             'post_url' => $refferrer,
-            'USER_AGENT' => $user_agent
+            'USER_AGENT' => $user_agent,
+            'REFFERRER_PREVIOUS' => isset($_COOKIE['apbct_prev_referer'])?$_COOKIE['apbct_prev_referer']:null,
         );
         $sender_info = json_encode($sender_info);
 
@@ -100,14 +136,10 @@ class CleantalkAPI {
         $ct_request->agent = 'vbulletin-21';
         $ct_request->js_on = $checkjs;
         $ct_request->sender_info = $sender_info;
-
-        $ct_submit_time = NULL;
+        $ct_request->submit_time = isset($_COOKIE['apbct_timestamp']) ? time() - intval($_COOKIE['apbct_timestamp']) : 0;
         switch ($type) {
             case 'comment':
-                if(isset($_SESSION['ct_submit_comment_time']))
-                    $ct_submit_time = time() - $_SESSION['ct_submit_comment_time'];
                 $timelabels_key = 'mail_error_comment';
-                $ct_request->submit_time = $ct_submit_time;
 
                 $message_title = isset($arEntity['message_title']) ? $arEntity['message_title'] : '';
                 $message_body = isset($arEntity['message_body']) ? $arEntity['message_body'] : '';
@@ -142,11 +174,8 @@ class CleantalkAPI {
                 $ct_result = $ct->isAllowMessage($ct_request);
                 break;
             case 'register':
-                if(isset($_SESSION['ct_submit_register_time']))
-                    $ct_submit_time = time() - $_SESSION['ct_submit_register_time'];
 
                 $timelabels_key = 'mail_error_reg';
-                $ct_request->submit_time = $ct_submit_time;
                 $ct_request->tz = isset($arEntity['user_timezone']) ? $arEntity['user_timezone'] : NULL;
                 $ct_result = $ct->isAllowUser($ct_request);
                 break;
