@@ -1,3 +1,3 @@
 # vbulletin-antispam
-## Version 2.0
+## Version 2.1
 Anti-spam hook for vBulletin 4.X.

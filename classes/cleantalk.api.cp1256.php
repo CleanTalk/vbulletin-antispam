@@ -7,7 +7,7 @@ class CleantalkAPI {
      * @param string Type of form - 'register' or 'comment' only
      * @return string Template addon text
      */
-    static function FormAddon($sType) {
+  static function FormAddon($sType) {
     global $vbulletin;
     if($sType != 'register' && $sType != 'comment')
         return '';
@@ -111,7 +111,7 @@ class CleantalkAPI {
             'REFFERRER' => $refferrer,
             'post_url' => $refferrer,
             'USER_AGENT' => $user_agent,
-            'REFFERRER_PREVIOUS' => isset($_COOKIE['apbct_prev_referer'])?$_COOKIE['apbct_prev_referer']:null,            
+            'REFFERRER_PREVIOUS' => isset($_COOKIE['apbct_prev_referer'])?$_COOKIE['apbct_prev_referer']:null,
         );
         $sender_info = json_encode($sender_info);
 
@@ -120,6 +120,9 @@ class CleantalkAPI {
         $ct->server_url = $ct_ws['server_url'];
         $ct->server_ttl = $ct_ws['server_ttl'];
         $ct->server_changed = $ct_ws['server_changed'];
+
+        $ct->data_codepage = "windows-1251"; // uncomment when cp1251
+
     if (isset($_SERVER['HTTP_X_FORWARDED_FOR'])){
         $forwarded_for = (isset($_SERVER['HTTP_X_FORWARDED_FOR'])) ? htmlentities($_SERVER['HTTP_X_FORWARDED_FOR']) : '';
     }
