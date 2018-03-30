@@ -240,7 +240,7 @@ class CleantalkAPI {
             $vbulletin->db->query_write("
                 UPDATE " . TABLE_PREFIX . "cleantalk_timelabels
                 SET ct_value=" . time() . " WHERE ct_key='$timelabels_key'
-            );
+            ");
                 }
 
             $ct_admin_users = $vbulletin->db->query_read("SELECT * FROM " . TABLE_PREFIX . "user WHERE usergroupid=6");
