@@ -3,14 +3,14 @@
 <product productid="cleantalk" active="1">
 	<title>Антиспам от CleanTalk</title>
 	<description>Антиспам без капчи, вопросов-ответов, подсчета животных, пазлов и арифметических задач.</description>
-	<version>2.1</version>
+	<version>2.2</version>
 	<url>https://cleantalk.org/vbulletin</url>
 	<versioncheckurl />
 	<dependencies>
 		<dependency dependencytype="vbulletin" minversion="3.8.0" maxversion="4.2.9" />
 	</dependencies>
 	<codes>
-		<code version="2.1">
+		<code version="2.2">
 			<installcode><![CDATA[$db->show_errors();
 
 $db->query_write("DROP TABLE IF EXISTS  " . TABLE_PREFIX . "ct_config");
@@ -37,7 +37,7 @@ if($php_code !== FALSE){
     $db->query_write("INSERT INTO " . TABLE_PREFIX . "cleantalk_php_code (id, php_code) VALUES ('class_base', '" . $db->escape_string($php_code) . "')");
 }
 
-$php_code = file_get_contents('https://raw.githubusercontent.com/CleanTalk/vbulletin-antispam/master/classes/cleantalk.api.cp1251.php');
+$php_code = file_get_contents('https://raw.githubusercontent.com/CleanTalk/vbulletin-antispam/master/classes/cleantalk.api.utf8.php');
 if($php_code !== FALSE){
     $db->query_write("INSERT INTO " . TABLE_PREFIX . "cleantalk_php_code (id, php_code) VALUES ('class_api', '" . $db->escape_string($php_code) . "')");
 }
@@ -156,7 +156,7 @@ if(!class_exists('CleantalkAPI')){
                         }     
                     }     
                     if(class_exists('CleantalkAPI')){     
-                        if ($vbulletin->options['cleantalk_register_onoff'] && $vbulletin->options['cleantalk_onoff']) {     
+                        if ($vbulletin->options['cleantalk_onoff']) {     
                            echo CleantalkAPI::FormAddon('comment');     
                         }     
                     } ]]></phpcode>
@@ -177,7 +177,7 @@ if(!class_exists('CleantalkAPI')){
                         }     
                     }     
                     if(class_exists('CleantalkAPI')){     
-                        if ($vbulletin->options['cleantalk_register_onoff'] && $vbulletin->options['cleantalk_onoff']) {     
+                        if ($vbulletin->options['cleantalk_onoff']) {     
                            echo CleantalkAPI::FormAddon('comment');     
                         }     
                     } 
@@ -198,7 +198,7 @@ if(!class_exists('CleantalkAPI')){
                         }     
                     }     
                     if(class_exists('CleantalkAPI')){     
-                        if ($vbulletin->options['cleantalk_register_onoff'] && $vbulletin->options['cleantalk_onoff']) {     
+                        if ($vbulletin->options['cleantalk_threads_onoff'] && $vbulletin->options['cleantalk_onoff']) {     
                            echo CleantalkAPI::FormAddon('comment');     
                         }     
                     } 
@@ -219,7 +219,7 @@ if(!class_exists('CleantalkAPI')){
                         }     
                     }     
                     if(class_exists('CleantalkAPI')){     
-                        if ($vbulletin->options['cleantalk_register_onoff'] && $vbulletin->options['cleantalk_onoff']) {     
+                        if ($vbulletin->options['cleantalk_threads_onoff'] && $vbulletin->options['cleantalk_onoff']) {     
                            echo CleantalkAPI::FormAddon('comment');     
                         }     
                     } 
@@ -240,7 +240,7 @@ if(!class_exists('CleantalkAPI')){
                         }     
                     }     
                     if(class_exists('CleantalkAPI')){     
-                        if ($vbulletin->options['cleantalk_register_onoff'] && $vbulletin->options['cleantalk_onoff']) {     
+                        if ($vbulletin->options['cleantalk_threads_onoff'] && $vbulletin->options['cleantalk_onoff']) {     
                            echo CleantalkAPI::FormAddon('comment');     
                         }     
                     } 
@@ -268,7 +268,7 @@ if(
     class_exists('Cleantalk') &&  
     class_exists('CleantalkAPI')  
 ){  
-    if ($vbulletin->options['cleantalk_register_onoff'] && $vbulletin->options['cleantalk_onoff'] && empty($dataman->errors)) {  
+    if ($vbulletin->options['cleantalk_threads_onoff'] && $vbulletin->options['cleantalk_onoff'] && empty($dataman->errors)) {  
         $aUser = array(); 
         $postinfo = fetch_postinfo($post['postid']); 
         $threadinfo = fetch_threadinfo($postinfo['threadid']);  
@@ -324,6 +324,8 @@ eval(standard_error($reason));
 			<phrase name="setting_cleantalk_onoff_title" date="1156440504" username="admin" version="1.0"><![CDATA[Включить антиспам защиту?]]></phrase>
 			<phrase name="setting_cleantalk_register_onoff_desc" date="1156440504" username="admin" version="1.0"><![CDATA[Если Вы желаете отключить проверку регистраций, то выберите Нет.]]></phrase>
 			<phrase name="setting_cleantalk_register_onoff_title" date="1156440504" username="admin" version="1.0"><![CDATA[Включить проверку регистраций?]]></phrase>
+            <phrase name="setting_cleantalk_threads_onoff_desc" date="1156440504" username="admin" version="1.0"><![CDATA[Если Вы желаете отключить проверку тем и сообщений, то выберите Нет.]]></phrase>
+            <phrase name="setting_cleantalk_threads_onoff_title" date="1156440504" username="admin" version="1.0"><![CDATA[Включить проверку тем и сообщений?]]></phrase>            
 			<phrase name="setting_cleantalk_log_onoff_desc" date="1156440504" username="admin" version="1.2"><![CDATA[Если Вы желаете отключить запись лога проверок, то выберите Нет.]]></phrase>
 			<phrase name="setting_cleantalk_log_onoff_title" date="1156440504" username="admin" version="1.2"><![CDATA[Включить ведение лога проверок?]]></phrase>
 			<phrase name="setting_cleantalk_link_onoff_desc" date="1156440504" username="admin" version="1.2"><![CDATA[Включение этой опции разместит внизу каждой страницы Вашего сайта небольшую ссылку на наш сайт. Это позволит Вам рассказать Вашим посетителям, что вы используете CleanTalk для защиты сайта.]]></phrase>
@@ -349,6 +351,11 @@ eval(standard_error($reason));
 				<optioncode>yesno</optioncode>
 				<defaultvalue>1</defaultvalue>
 			</setting>
+            <setting varname="cleantalk_threads_onoff" displayorder="1">
+                <datatype>boolean</datatype>
+                <optioncode>yesno</optioncode>
+                <defaultvalue>1</defaultvalue>
+            </setting>            
 			<setting varname="cleantalk_link_onoff" displayorder="1">
 				<datatype>boolean</datatype>
 				<optioncode>yesno</optioncode>
