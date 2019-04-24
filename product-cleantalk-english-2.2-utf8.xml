@@ -3,14 +3,14 @@
 <product productid="cleantalk" active="1">
 	<title>Anti-spam by CleanTalk</title>
 	<description>No Captcha, no questions, no counting animals, no puzzles, no math.</description>
-	<version>2.1</version>
+	<version>2.2</version>
 	<url>https://cleantalk.org/vbulletin</url>
 	<versioncheckurl />
 	<dependencies>
 		<dependency dependencytype="vbulletin" minversion="3.8.0" maxversion="4.2.9" />
 	</dependencies>
 	<codes>
-		<code version="2.1">
+		<code version="2.2">
 			<installcode><![CDATA[$db->show_errors();
 
 $db->query_write("DROP TABLE IF EXISTS  " . TABLE_PREFIX . "ct_config");
@@ -156,7 +156,7 @@ if(!class_exists('CleantalkAPI')){
                         }     
                     }     
                     if(class_exists('CleantalkAPI')){     
-                        if ($vbulletin->options['cleantalk_register_onoff'] && $vbulletin->options['cleantalk_onoff']) {     
+                        if ($vbulletin->options['cleantalk_onoff']) {     
                            echo CleantalkAPI::FormAddon('comment');     
                         }     
                     } ]]></phpcode>
@@ -177,7 +177,7 @@ if(!class_exists('CleantalkAPI')){
                         }     
                     }     
                     if(class_exists('CleantalkAPI')){     
-                        if ($vbulletin->options['cleantalk_register_onoff'] && $vbulletin->options['cleantalk_onoff']) {     
+                        if ($vbulletin->options['cleantalk_onoff']) {     
                            echo CleantalkAPI::FormAddon('comment');     
                         }     
                     } 
@@ -198,7 +198,7 @@ if(!class_exists('CleantalkAPI')){
                         }     
                     }     
                     if(class_exists('CleantalkAPI')){     
-                        if ($vbulletin->options['cleantalk_register_onoff'] && $vbulletin->options['cleantalk_onoff']) {     
+                        if ($vbulletin->options['cleantalk_threads_onoff'] && $vbulletin->options['cleantalk_onoff']) {     
                            echo CleantalkAPI::FormAddon('comment');     
                         }     
                     } 
@@ -219,7 +219,7 @@ if(!class_exists('CleantalkAPI')){
                         }     
                     }     
                     if(class_exists('CleantalkAPI')){     
-                        if ($vbulletin->options['cleantalk_register_onoff'] && $vbulletin->options['cleantalk_onoff']) {     
+                        if ($vbulletin->options['cleantalk_threads_onoff'] && $vbulletin->options['cleantalk_onoff']) {     
                            echo CleantalkAPI::FormAddon('comment');     
                         }     
                     } 
@@ -240,7 +240,7 @@ if(!class_exists('CleantalkAPI')){
                         }     
                     }     
                     if(class_exists('CleantalkAPI')){     
-                        if ($vbulletin->options['cleantalk_register_onoff'] && $vbulletin->options['cleantalk_onoff']) {     
+                        if ($vbulletin->options['cleantalk_threads_onoff'] && $vbulletin->options['cleantalk_onoff']) {     
                            echo CleantalkAPI::FormAddon('comment');     
                         }     
                     } 
@@ -268,7 +268,7 @@ if(
     class_exists('Cleantalk') &&  
     class_exists('CleantalkAPI')  
 ){  
-    if ($vbulletin->options['cleantalk_register_onoff'] && $vbulletin->options['cleantalk_onoff'] && empty($dataman->errors)) {  
+    if ($vbulletin->options['cleantalk_threads_onoff'] && $vbulletin->options['cleantalk_onoff'] && empty($dataman->errors)) {  
         $aUser = array(); 
         $postinfo = fetch_postinfo($post['postid']); 
         $threadinfo = fetch_threadinfo($postinfo['threadid']);  
@@ -323,12 +323,14 @@ eval(standard_error($reason));
 			<phrase name="setting_cleantalk_onoff_desc" date="1156440504" username="admin" version="1.0"><![CDATA[If you would like to disable anti-spam protection, please select No here.]]></phrase>
 			<phrase name="setting_cleantalk_onoff_title" date="1156440504" username="admin" version="1.0"><![CDATA[Enable anti-spam protection?]]></phrase>
 			<phrase name="setting_cleantalk_register_onoff_desc" date="1156440504" username="admin" version="1.0"><![CDATA[If you would like to disable the registration check, please select No here.]]></phrase>
+            <phrase name="setting_cleantalk_register_onoff_title" date="1156440504" username="admin" version="1.0"><![CDATA[Enable registration check?]]></phrase>            
+            <phrase name="setting_cleantalk_threads_onoff_desc" date="1156440504" username="admin" version="1.0"><![CDATA[If you would like to disable the spam and threads check, please select No here.]]></phrase>
+            <phrase name="setting_cleantalk_threads_onoff_title" date="1156440504" username="admin" version="1.0"><![CDATA[Enable threands and messages check?]]></phrase>            
 			<phrase name="setting_cleantalk_log_onoff_desc" date="1156440504" username="admin" version="1.2"><![CDATA[If you would like to disable logging, please select No here.]]></phrase>
 			<phrase name="setting_cleantalk_log_onoff_title" date="1156440504" username="admin" version="1.2"><![CDATA[Enable logging?]]></phrase>
 			<phrase name="setting_cleantalk_link_onoff_desc" date="1156440504" username="admin" version="1.2"><![CDATA[Enabling this option places a small link in the footer of your site that lets others know what anti-spam tool protects your site.]]></phrase>
 			<phrase name="setting_cleantalk_link_onoff_title" date="1156440504" username="admin" version="1.2"><![CDATA[Tell others about CleanTalk?]]></phrase>
 
-			<phrase name="setting_cleantalk_register_onoff_title" date="1156440504" username="admin" version="1.0"><![CDATA[Enable registration check?]]></phrase>
 			<phrase name="settinggroup_cleantalk" date="1156439888" username="admin" version="1.0"><![CDATA[Anti-spam by CleanTalk]]></phrase>
 		</phrasetype>
 	</phrases>
@@ -348,6 +350,11 @@ eval(standard_error($reason));
 				<optioncode>yesno</optioncode>
 				<defaultvalue>1</defaultvalue>
 			</setting>
+            <setting varname="cleantalk_threads_onoff" displayorder="1">
+                <datatype>boolean</datatype>
+                <optioncode>yesno</optioncode>
+                <defaultvalue>1</defaultvalue>
+            </setting>            
 			<setting varname="cleantalk_link_onoff" displayorder="1">
 				<datatype>boolean</datatype>
 				<optioncode>yesno</optioncode>

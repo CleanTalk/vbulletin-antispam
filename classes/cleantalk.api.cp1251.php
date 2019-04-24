@@ -12,22 +12,22 @@ class CleantalkAPI {
     if($sType != 'register' && $sType != 'comment')
         return '';
     if ($vbulletin->options['cleantalk_register_onoff'] && $vbulletin->options['cleantalk_onoff']) {
-        self::CookieTest();
-	    if (!session_id()) session_start();
+        self::cookies_set();
+        if (!session_id()) session_start();
         $ct_check_value = md5($vbulletin->options['cleantalk_key']);
         $_SESSION['ct_check_key'] = $ct_check_value;
         if (!isset($_COOKIE['ct_checkjs']))
-			setcookie('ct_checkjs', $ct_check_value, time()+3600, '/');
-	}
+            setcookie('ct_checkjs', $ct_check_value, time()+3600, '/');
+    }
     else
         return '';
 }
-    static function CookieTest()
+    static function cookies_set()
     {
         // Cookie names to validate
         $cookie_test_value = array(
             'cookies_names' => array(),
-            'check_value' => $vbulletin->options['cleantalk_key'],
+            'check_value' => trim($vbulletin->options['cleantalk_key']),
         );
             
         // Submit time
@@ -59,6 +59,30 @@ class CleantalkAPI {
     }
 
     /**
+     * Cookies test for sender 
+     * @return null|0|1;
+     */
+    static function cookies_test()
+    {        
+        if(isset($_COOKIE['apbct_cookies_test'])){
+            
+            $cookie_test = json_decode(stripslashes($_COOKIE['apbct_cookies_test']), true);
+            
+            $check_srting = trim($vbulletin->options['cleantalk_key']);
+            foreach($cookie_test['cookies_names'] as $cookie_name){
+                $check_srting .= isset($_COOKIE[$cookie_name]) ? $_COOKIE[$cookie_name] : '';
+            } unset($cokie_name);
+            
+            if($cookie_test['check_value'] == md5($check_srting)){
+                return 1;
+            }else{
+                return 0;
+            }
+        }else{
+            return null;
+        }
+    }
+    /**
      * Universal method for checking comment or new user for spam
      * It makes checking itself
      * @param &array Entity to check (comment or new user)
@@ -80,7 +104,7 @@ class CleantalkAPI {
             return;
         }
 
-    $ct_key = $vbulletin->options['cleantalk_key'];
+    $ct_key = trim($vbulletin->options['cleantalk_key']);
         $ct_ws = self::GetWorkServer();
 
         if (!session_id()) session_start();
@@ -112,6 +136,7 @@ class CleantalkAPI {
             'post_url' => $refferrer,
             'USER_AGENT' => $user_agent,
             'REFFERRER_PREVIOUS' => isset($_COOKIE['apbct_prev_referer'])?$_COOKIE['apbct_prev_referer']:null,
+            'cookies_enabled' => self::cookies_test(),           
         );
         $sender_info = json_encode($sender_info);
 
@@ -120,9 +145,6 @@ class CleantalkAPI {
         $ct->server_url = $ct_ws['server_url'];
         $ct->server_ttl = $ct_ws['server_ttl'];
         $ct->server_changed = $ct_ws['server_changed'];
-
-        $ct->data_codepage = "windows-1251"; // uncomment when cp1251
-
     if (isset($_SERVER['HTTP_X_FORWARDED_FOR'])){
         $forwarded_for = (isset($_SERVER['HTTP_X_FORWARDED_FOR'])) ? htmlentities($_SERVER['HTTP_X_FORWARDED_FOR']) : '';
     }
@@ -133,11 +155,10 @@ class CleantalkAPI {
         $ct_request->sender_email = isset($arEntity['sender_email']) ? $arEntity['sender_email'] : '';
         $ct_request->sender_nickname = isset($arEntity['sender_nickname']) ? $arEntity['sender_nickname'] : '';
         $ct_request->sender_ip = isset($arEntity['sender_ip']) ? $arEntity['sender_ip'] : $sender_ip;
-        $ct_request->agent = 'vbulletin-21';
+        $ct_request->agent = 'vbulletin-22';
         $ct_request->js_on = $checkjs;
         $ct_request->sender_info = $sender_info;
         $ct_request->submit_time = isset($_COOKIE['apbct_timestamp']) ? time() - intval($_COOKIE['apbct_timestamp']) : 0;
-
         switch ($type) {
             case 'comment':
                 $timelabels_key = 'mail_error_comment';
