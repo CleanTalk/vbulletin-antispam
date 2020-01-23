@@ -776,7 +776,7 @@ class Cleantalk {
      * @return array
      */
     public function get_servers_ip($host) {
-        $response = null;
+        $response = array();
         if (!isset($host))
             return $response;
 
