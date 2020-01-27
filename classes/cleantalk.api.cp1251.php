@@ -24,6 +24,7 @@ class CleantalkAPI {
 }
     static function cookies_set()
     {
+		global $vbulletin;
         // Cookie names to validate
         $cookie_test_value = array(
             'cookies_names' => array(),
