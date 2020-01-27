@@ -64,7 +64,8 @@ class CleantalkAPI {
      * @return null|0|1;
      */
     static function cookies_test()
-    {        
+    {
+	    global $vbulletin;
         if(isset($_COOKIE['apbct_cookies_test'])){
             
             $cookie_test = json_decode(stripslashes($_COOKIE['apbct_cookies_test']), true);
@@ -318,8 +319,8 @@ class CleantalkAPI {
             );
         else
             return array(
-                'work_url' => 'http://moderate.cleantalk.ru',
-                'server_url' => 'http://moderate.cleantalk.ru',
+                'work_url' => 'http://moderate.cleantalk.org',
+                'server_url' => 'http://moderate.cleantalk.org',
                 'server_ttl' => 0,
                 'server_changed' => 0,
             );
@@ -328,7 +329,7 @@ class CleantalkAPI {
     /**
      * CleanTalk inner function - sets working server.
      */
-    private static function SetWorkServer($work_url = 'http://moderate.cleantalk.ru', $server_url = 'http://moderate.cleantalk.ru', $server_ttl = 0, $server_changed = 0) {
+    private static function SetWorkServer($work_url = 'http://moderate.cleantalk.org', $server_url = 'http://moderate.cleantalk.org', $server_ttl = 0, $server_changed = 0) {
         global $vbulletin;
         $result = $vbulletin->db->query_first('SELECT count(*) AS count FROM ' . TABLE_PREFIX . 'cleantalk_server');
         $count = $result['count'];
