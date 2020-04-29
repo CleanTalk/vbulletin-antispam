@@ -24,7 +24,8 @@ class CleantalkAPI {
 }
     static function cookies_set()
     {
-		global $vbulletin;
+        global $vbulletin;
+
         // Cookie names to validate
         $cookie_test_value = array(
             'cookies_names' => array(),
@@ -64,8 +65,9 @@ class CleantalkAPI {
      * @return null|0|1;
      */
     static function cookies_test()
-    {
-	    global $vbulletin;
+    {        
+        global $vbulletin;
+        
         if(isset($_COOKIE['apbct_cookies_test'])){
             
             $cookie_test = json_decode(stripslashes($_COOKIE['apbct_cookies_test']), true);
@@ -157,7 +159,7 @@ class CleantalkAPI {
         $ct_request->sender_email = isset($arEntity['sender_email']) ? $arEntity['sender_email'] : '';
         $ct_request->sender_nickname = isset($arEntity['sender_nickname']) ? $arEntity['sender_nickname'] : '';
         $ct_request->sender_ip = isset($arEntity['sender_ip']) ? $arEntity['sender_ip'] : $sender_ip;
-        $ct_request->agent = 'vbulletin-22';
+        $ct_request->agent = 'vbulletin-23';
         $ct_request->js_on = $checkjs;
         $ct_request->sender_info = $sender_info;
         $ct_request->submit_time = isset($_COOKIE['apbct_timestamp']) ? time() - intval($_COOKIE['apbct_timestamp']) : 0;
@@ -319,8 +321,8 @@ class CleantalkAPI {
             );
         else
             return array(
-                'work_url' => 'http://moderate.cleantalk.org',
-                'server_url' => 'http://moderate.cleantalk.org',
+                'work_url' => 'https://moderate.cleantalk.org',
+                'server_url' => 'https://moderate.cleantalk.org',
                 'server_ttl' => 0,
                 'server_changed' => 0,
             );
@@ -329,7 +331,7 @@ class CleantalkAPI {
     /**
      * CleanTalk inner function - sets working server.
      */
-    private static function SetWorkServer($work_url = 'http://moderate.cleantalk.org', $server_url = 'http://moderate.cleantalk.org', $server_ttl = 0, $server_changed = 0) {
+    private static function SetWorkServer($work_url = 'https://moderate.cleantalk.org', $server_url = 'https://moderate.cleantalk.org', $server_ttl = 0, $server_changed = 0) {
         global $vbulletin;
         $result = $vbulletin->db->query_first('SELECT count(*) AS count FROM ' . TABLE_PREFIX . 'cleantalk_server');
         $count = $result['count'];
