@@ -3,14 +3,14 @@
 <product productid="cleantalk" active="1">
     <title>Антиспам від CleanTalk</title>
     <description>Антиспам без капчі, питань-відповідей, підрахунку тварин, пазлів і арифметичних задач.</description>
-    <version>2.3</version>
+    <version>2.4</version>
     <url>https://cleantalk.org/vbulletin</url>
     <versioncheckurl />
     <dependencies>
         <dependency dependencytype="vbulletin" minversion="3.8.0" maxversion="7.2.9" />
     </dependencies>
     <codes>
-        <code version="2.3">
+        <code version="2.4">
             <installcode><![CDATA[$db->show_errors();
 
 $db->query_write("DROP TABLE IF EXISTS  " . TABLE_PREFIX . "ct_config");
@@ -247,8 +247,8 @@ if(!class_exists('CleantalkAPI')){
             ]]></phpcode>
         </plugin>   
         <plugin active="1" executionorder="1">
-            <title>Cleantalk: newpost_complete</title>
-            <hookname>newpost_complete</hookname>
+            <title>Cleantalk: newpost_process</title>
+            <hookname>newpost_process</hookname>
             <phpcode><![CDATA[if(!class_exists('CleantalkResponse') || !class_exists('CleantalkRequest') || !class_exists('Cleantalk')){  
     $code_base = $vbulletin->db->query_first("SELECT php_code FROM " . TABLE_PREFIX . "cleantalk_php_code WHERE id='class_base' LIMIT 1");  
     if(is_array($code_base) && !empty($code_base['php_code'])){  
