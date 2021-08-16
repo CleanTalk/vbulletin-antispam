@@ -270,13 +270,13 @@ if(
 ){  
     if ($vbulletin->options['cleantalk_threads_onoff'] && $vbulletin->options['cleantalk_onoff'] && empty($dataman->errors)) {  
         $aUser = array(); 
-        $postinfo = fetch_postinfo($post['postid']); 
-        $threadinfo = fetch_threadinfo($postinfo['threadid']);  
+        $ct_postinfo = fetch_postinfo($post['postid']); 
+        $ct_threadinfo = fetch_threadinfo($ct_postinfo['threadid']);  
         $aUser['type'] = 'comment';  
         $aUser['sender_email'] = isset($vbulletin->userinfo['email']) ? $vbulletin->userinfo['email'] : '';  
         $aUser['sender_nickname'] = isset($vbulletin->userinfo['username']) ? $vbulletin->userinfo['username'] : '';  
-        $aUser['message_body'] = isset($postinfo['pagetext']) ? $postinfo['pagetext']  : '';  
-        $aUser['message_title'] = empty($postinfo['title']) ? $threadinfo['title'] : $postinfo['title']; 
+        $aUser['message_body'] = isset($ct_postinfo['pagetext']) ? $ct_postinfo['pagetext']  : '';  
+        $aUser['message_title'] = empty($ct_postinfo['title']) ? $ct_threadinfo['title'] : $ct_postinfo['title']; 
         $aResult = CleantalkAPI::CheckSpam($aUser, TRUE); // Send email too  
 
         if(isset($aResult) && is_array($aResult)){  
@@ -296,9 +296,9 @@ require_once(DIR . '/includes/functions_databuild.php');
                     {  
                         $vbulletin->db->query_write("INSERT INTO " . TABLE_PREFIX . "moderatorlog (dateline, action, threadtitle, product, ipaddress) VALUES ('".TIMENOW."', '".$vbulletin->db->escape_string($log_str)."', '', 'cleantalk', '".$vbulletin->db->escape_string(IPADDRESS)."')");  
                     }  
-delete_post( $postinfo['postid'], true, $threadinfo['threadid'], true, $ct_mod_info, true ); 
-        build_thread_counters($threadinfo['threadid']); 
-        build_forum_counters($threadinfo['forumid']); 
+delete_post( $ct_postinfo['postid'], true, $ct_threadinfo['threadid'], true, $ct_mod_info, true ); 
+        build_thread_counters($ct_threadinfo['threadid']); 
+        build_forum_counters($ct_threadinfo['forumid']); 
 $reason = '<font color="red">'.$aResult['ct_result_comment'].'</font>'; 
 eval(standard_error($reason)); 
                 }  
