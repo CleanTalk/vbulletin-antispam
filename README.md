@@ -1,4 +1,7 @@
 # vbulletin-antispam
+
+If you find this project useful, please consider starring ⭐ it on GitHub — it helps us grow and support development!
+
 ## Version 2.3
 Anti-spam hook for vBulletin 4.X.
 
